@@ -48,6 +48,10 @@ async function main() {
             postContainer.append(post);
         }
         countItems = end;
+        
+        if (countItems >= invData.descriptions.length){
+            loadMoreBtn.style.display = "none";
+        }
     }
 }
 
