@@ -9,7 +9,7 @@ app.get("/steam", async (req, res) => {
     const steamid = req.query.steamid;
     const appid = req.query.appid || "730";
     const contextid = req.query.contextid || "2";
-    const count = req.query.count || "1";
+    const count = req.query.count || "10";
   if (!steamid) {
     return res.status(400).json({ error: "Missing steamid" });
   }
