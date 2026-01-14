@@ -9,6 +9,8 @@ async function loadfiles(link) {
 }
 
 async function main() {
+    let countItems = 1; // Starts at 1 because list starts at 0
+    let totalItemDisplayed = 9; // 9 items displayed in start
     const steamid = "76561198992052209";
     const steamLink = `/steam?steamid=${steamid}`;
 
@@ -17,22 +19,35 @@ async function main() {
 
     console.log(invData);
 
+    const loadMoreBtn = document.getElementById("loadMoreBtn");
+    loadMoreBtn.addEventListener("click", () => {
+        loadMorePosts();
+    });
+
     const postContainer = document.getElementById("posts");
-    for (let i = 0; i <= invData.descriptions.length-1; i++) {
-        const post = document.createElement("div");
-        post.classList.add("post");
 
-        const itemName = document.createElement("h4");
-        itemName.textContent = invData.descriptions[i].name;
+    loadMorePosts();
 
-        const itemImage = document.createElement("img");
-        itemImage.src = `https://community.cloudflare.steamstatic.com/economy/image/${invData.descriptions[i].icon_url}`;
+    async function loadMorePosts() {
+        const end = countItems + totalItemDisplayed;
 
-        const itemPrice = document.createElement("h6");
-        itemPrice.textContent = "Market value: ";
+        for (let i = countItems; i < end && i < invData.descriptions.length; i++) {
+            const post = document.createElement("div");
+            post.classList.add("post");
 
-        post.append(itemName, itemImage, itemPrice);
-        postContainer.append(post);
+            const itemName = document.createElement("h4");
+            itemName.textContent = invData.descriptions[i].name;
+
+            const itemImage = document.createElement("img");
+            itemImage.src = `https://community.cloudflare.steamstatic.com/economy/image/${invData.descriptions[i].icon_url}`;
+
+            const itemPrice = document.createElement("h6");
+            itemPrice.textContent = "Market value: ";
+
+            post.append(itemName, itemImage, itemPrice);
+            postContainer.append(post);
+        }
+        countItems = end;
     }
 }
 
