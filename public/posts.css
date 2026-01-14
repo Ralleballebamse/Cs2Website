@@ -101,92 +101,26 @@ body {
 /* ---------- Main ---------- */
 .posts{
     color: var(--text);
-    max-width: 100%;
-    margin: 1rem auto;
+    margin: 1rem 1rem;
     display: grid; 
     grid-template-columns: repeat(3, 1fr);
     gap: 1.25rem;
 }
 
-.text h1, .text h2{
+.post{
+    border: 2px;
+    border-style: solid;
+    border-color: var(--accent);
     text-align: center;
 }
 
-.text a{
-    display: block;
-    text-align: center;
-    font-size: 1rem;
-    padding: 0 0 10px;
+.post h4{
+    height: 30px;
+    margin: 10px 0px;
 }
 
-.comments h1{
-    text-align: center;
-}
-
-.posts p{
-    padding: 0 20px 10px;
-}
-
-.textAndComments {
-    background-color: var(--surface);
-    display: flex;
-    justify-content: space-between;
-    align-items: stretch;
-    border-radius: 15px;
-    gap: 1rem;
-}
-
-.text { 
-    flex: 3; 
-}
-
-.comments { 
-    flex: 1; 
-    overflow: hidden;
-    overflow-y: auto;
-    max-height: 14rem;
-}
-
-.comments h1{
-    font-size: 2vw;
-}
-
-.comments h2{
-    font-size: 1.5vw;
-}
-
-.comments p{
-    font-size: 1vw;
-}
-
-.commentsDetails h4{
-    margin: 0;
-}
-
-.commentsDetails p{
-    padding: 0 20px 0px;
-}
-
-#profileDialog::backdrop {
-    background: rgba(0,0,0,0.6);
-}
-
-#profileDialog {
-    border: none;
-    outline: none;
-    padding: 0;
-}
-
-.profileBox {
-    background: var(--surface);
-    color: var(--text);
-    border-radius: 15px;
-    padding: 1.25rem;
-}
-
-.profileBox h2{
-    text-align: center;
-    text-decoration: underline;
+.post img{
+    width: 60%;
 }
 
 .loadMoreWrapper {
@@ -206,35 +140,6 @@ body {
     font-size: 1rem;
     cursor: pointer;
     transition: all 0.2s ease;
-}
-
-@media (max-width: 1800px){
-    .comments{
-        max-height: 15rem;
-    }
-}
-
-@media (max-width: 1024px){
-    .textAndComments{
-        display: block;
-    }
-
-    .comments{
-        margin: 20px;
-    }
-
-    .comments h1, .comments h2{
-        font-size: 2rem;
-    }
-    .comments p{
-        font-size: 1.5rem;
-    }
-}
-@media (max-width: 420px){
-    .posts{
-        max-width: 60%;
-        margin: 0 auto;
-    }
 }
 
 /* ---------- Footer ---------- */
