@@ -9,7 +9,7 @@ async function loadfiles(link) {
 }
 
 async function main() {
-    let countItems = 1; // Starts at 1 because list starts at 0
+    let countItems = 0; // Starts at 1 because list starts at 0
     let totalItemDisplayed = 9; // 9 items displayed in start
     const steamid = "76561198992052209";
     const steamLink = `/steam?steamid=${steamid}`;
@@ -28,6 +28,19 @@ async function main() {
 
     loadMorePosts();
 
+    function createItemInspectLink(i){
+        const asset = invData.assets[i];
+        const desc = invData.descriptions.find(d =>
+        d.classid === asset.classid &&
+        d.instanceid === asset.instanceid
+        );
+        const inspectLink = desc.actions[0].link
+        .replace("%owner_steamid%", steamid)
+        .replace("%assetid%", asset.assetid);
+
+        return(inspectLink)
+    }
+
     async function loadMorePosts() {
         const end = countItems + totalItemDisplayed;
 
@@ -44,7 +57,18 @@ async function main() {
             const itemPrice = document.createElement("h6");
             itemPrice.textContent = "Market value: ";
 
-            post.append(itemName, itemImage, itemPrice);
+            if (invData.descriptions[i].tags && invData.descriptions[i].tags.length > 0) {
+                const inspectBtn = document.createElement("button");
+                inspectBtn.textContent = "Inspect";
+
+                inspectBtn.addEventListener("click", () => {
+                    const link = createItemInspectLink(i);
+                    window.location.href = link;
+                });
+                post.append(itemName, itemImage, itemPrice, inspectBtn);
+            }else{
+                post.append(itemName, itemImage, itemPrice);
+            }
             postContainer.append(post);
         }
         countItems = end;
