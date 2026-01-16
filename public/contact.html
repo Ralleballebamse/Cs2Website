@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A better twitter">
+    <link rel="canonical" href="/index.html">
+    <link rel="stylesheet" href="contact.css">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <script src="./contact.js" defer></script>
+    <title>ShadowNet</title>
+</head>
+
+<body>
+    <div class="container">
+
+        <header class = "header">
+            <nav class = "nav-list">
+                <h1>ShadowNet</h1>
+                <ul>
+                    <li><a href = "home.html">Home</a></li>
+                    <li><a href = "posts.html">Posts</a></li>
+                    <li><a id = "active" href = "contact.html">Contact</a></li>
+                </ul>
+            </nav>
+        </header>
+
+
+        <main class = "main">
+            <h2>Contact form</h2>
+            <h5>Type in your username, email and then confirm your</h5>
+            <h5>information by clicking in the checkbox and hit send.</h5>
+            <section class = "inputPersonalInformation">
+
+                <form id="contactForm" novalidate>
+                        <div class = "field">
+                        <label for="username">Input username</label>
+                        <textarea name="usernameDetails" id="username" rows="1" maxlength="280"></textarea>
+                    </div>
+
+                    <div class = "field">
+                        <label for="email">Input email</label>
+                        <textarea name="emailDetails" id="email" rows="1" maxlength="280"></textarea>
+                    </div>
+
+                    <div class = "field">
+                        <label for="email">Input email</label>
+                        <textarea name="keyup" id="keyup" rows="1" maxlength="280"></textarea>
+                    </div>
+
+                    <div class = "checkbox">
+                        <label for ="agree">Confirm to send</label>
+                        <input type="checkbox" id="agree">
+                    </div>
+
+                    <div class ="sendButton">
+                        <button type="button" id="submitBtn" disabled>Send</button>
+                    </div>
+            </form>
+            </section>
+        </main>
+
+
+        <footer class="footer" id="contact">
+            <div class="leftfooter">
+                <p>&copy; 2025 Rasmus Rolin</p>
+            </div>
+
+            <div class="rightfooter">
+                <h2>Contact Details</h2>
+                <address>
+                    <p>Phone: <a href="tel:123456789">123-456-789</a></p>
+                    <p>Email: <a href="mailto:Test@gmail.com">Test@gmail.com</a></p>
+                    <p>Address: Näsbychaussén 48A</p>
+                    <p>Open hours: 07-16</p>
+                </address>
+            </div>
+        </footer>
+    </div>
+
+</body>

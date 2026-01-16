@@ -1,0 +1,175 @@
+:root{
+  --bg: #0d0d0f;
+  --surface: #1b1b1e;
+  --text: #ff0000;
+  --muted: #9aa0a6;
+  --accent: #ff0000;
+  --danger: #710316;
+}
+
+html,
+body {
+    width: 100%;
+    min-height: 100%;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    box-sizing: border-box;
+}
+
+/*Whole screen*/
+.container {
+    display: grid;
+    grid-template-areas:
+        "header"
+        "main"
+        "footer";
+    grid-template-rows: auto 1fr auto;
+    gap: 5px;
+    background: var(--bg);
+}
+
+.main-wrap {
+  grid-area: main;
+  display: grid;
+  grid-template-columns: 250px 1fr;
+  gap: 1rem;
+  color: white;
+}
+
+/* ---------- Header ---------- */
+.header{
+    grid-area: header;
+    background-color: var(--surface);
+    text-align: center;
+    position: sticky;
+    align-self: start;
+    top: 0;  
+}
+
+.nav-list{
+    margin: 15px;
+}
+
+.header h1{
+    margin: 1vw;
+    font-size: 60px;
+    color: #d80000
+}
+
+.header a{
+    text-decoration: none;
+    background-color: var(--danger);
+    color: black;
+
+    margin: 5vw;
+    font-size: 30px;
+
+    padding: 0.2rem 0.2rem;
+    border-radius: 8px;
+}
+
+.header a:hover{
+    background: var(--accent);
+    color: #00110e;
+    box-shadow: 0 0 12px var(--accent);
+}
+
+#active {
+    background: var(--accent);
+    color: #00110e;
+    box-shadow: 0 0 12px var(--accent);
+}
+
+.header ul{
+    display: flex;
+    justify-content: center;
+    padding: 0px;
+}
+
+.header li{
+    padding-inline-start: 0px;
+    list-style: none;
+}
+
+@media (max-width: 420px){
+    .header a{
+        margin: 10px;
+    }
+}
+
+/* ---------- Main ---------- */
+.posts{
+    color: var(--text);
+    margin: 1rem 1rem;
+    display: grid; 
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+}
+
+.post{
+    border: 2px;
+    border-style: solid;
+    border-color: var(--accent);
+    text-align: center;
+}
+
+.post h4{
+    height: 30px;
+    margin: 10px 0px;
+}
+
+.post img{
+    width: 60%;
+}
+
+.loadMoreWrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;    
+    margin-top: 20px;
+    margin-bottom: 40px;
+}
+
+.loadMoreWrapper button {
+    background-color: #202020;
+    color: var(--text);
+    border: 2px solid var(--text);
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+/* ---------- Footer ---------- */
+.container>.footer {
+    grid-area: footer;
+    display: flex;
+    justify-content: center;
+    background: var(--surface);
+    color: var(--text);
+    gap: 20px;
+}
+
+.leftfooter {
+    align-self: center;
+}
+
+.leftfooter p {
+    font-size: 24px;
+}
+
+.rightfooter h2,
+.rightfooter h4 {
+    margin: 0;
+}
+
+.footer a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.footer a:hover {
+    text-decoration: underline;
+}
