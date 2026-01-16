@@ -46,7 +46,7 @@ async function main() {
         const end = countItems + totalItemDisplayed;
 
         let i = countItems;
-        for (let z = 0; z <= invData.assets.length-1; z++){
+        for (let z = 0; z <= invData.assets.length-1 && i < end; z++){
             if (!arrayAssets.includes(invData.assets[z].classid)) {
                 arrayAssets.push(invData.assets[z].classid);
 
@@ -88,7 +88,7 @@ async function main() {
                 }
             }
         }
-        
+        countItems = end;
         if (countItems >= invData.descriptions.length){
             loadMoreBtn.style.display = "none";
         }
