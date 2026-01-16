@@ -11,6 +11,7 @@ async function loadfiles(link) {
 async function main() {
     let countItems = 0; // Starts at 1 because list starts at 0
     let totalItemDisplayed = 9; // 9 items displayed in start
+    let arrayAssets = new Array; // Array for avoiding dublications of items
     const steamid = "76561198992052209";
     const steamLink = `/steam?steamid=${steamid}`;
 
@@ -28,8 +29,8 @@ async function main() {
 
     loadMorePosts();
 
-    function createItemInspectLink(i){
-        const asset = invData.assets[i];
+    function createItemInspectLink(z){
+        const asset = invData.assets[z];
         const desc = invData.descriptions.find(d =>
         d.classid === asset.classid &&
         d.instanceid === asset.instanceid
@@ -44,39 +45,54 @@ async function main() {
     async function loadMorePosts() {
         const end = countItems + totalItemDisplayed;
 
-        for (let i = countItems; i < end && i < invData.descriptions.length; i++) {
-            const post = document.createElement("div");
-            post.classList.add("post");
+        let i = countItems;
+        for (let z = 0; z <= invData.assets.length-1; z++){
+            if (!arrayAssets.includes(invData.assets[z].classid)) {
+                arrayAssets.push(invData.assets[z].classid);
 
-            const itemName = document.createElement("h4");
-            itemName.textContent = invData.descriptions[i].name;
+                    const post = document.createElement("div");
+                    post.classList.add("post");
 
-            const itemImage = document.createElement("img");
-            itemImage.src = `https://community.cloudflare.steamstatic.com/economy/image/${invData.descriptions[i].icon_url}`;
+                    const itemName = document.createElement("h4");
+                    itemName.textContent = invData.descriptions[i].name;
 
-            const itemPrice = document.createElement("h6");
-            itemPrice.textContent = "Market value: ";
+                    const itemImage = document.createElement("img");
+                    itemImage.src = `https://community.cloudflare.steamstatic.com/economy/image/${invData.descriptions[i].icon_url}`;
 
-            if (invData.descriptions[i].tags && invData.descriptions[i].tags.length > 0) {
-                const inspectBtn = document.createElement("button");
-                inspectBtn.textContent = "Inspect";
+                    const itemPrice = document.createElement("h6");
+                    itemPrice.textContent = "Market value: ";
 
-                inspectBtn.addEventListener("click", () => {
-                    const link = createItemInspectLink(i);
-                    window.location.href = link;
-                });
-                post.append(itemName, itemImage, itemPrice, inspectBtn);
-            }else{
-                post.append(itemName, itemImage, itemPrice);
+                    if (
+                        invData.descriptions[i].tags &&
+                        invData.descriptions[i].tags.some(tag =>
+                            tag.category === "Type" &&
+                            tag.internal_name.startsWith("CSGO_Type_") &&
+                            !tag.internal_name.includes("Spray") &&
+                            !tag.internal_name.includes("WeaponCase") ||
+                            tag.internal_name.startsWith("Type_Hands")
+                        )
+                    ) {
+                        const inspectBtn = document.createElement("button");
+                        inspectBtn.textContent = "Inspect";
+
+                        inspectBtn.addEventListener("click", () => {
+                            const link = createItemInspectLink(z);
+                            window.location.href = link;
+                        });
+                        post.append(itemName, itemImage, itemPrice, inspectBtn);
+                    }else{
+                        post.append(itemName, itemImage, itemPrice);
+                    }
+                    i++
+                    postContainer.append(post);
+                }
             }
-            postContainer.append(post);
         }
-        countItems = end;
         
         if (countItems >= invData.descriptions.length){
             loadMoreBtn.style.display = "none";
         }
     }
-}
+
 
 main();
