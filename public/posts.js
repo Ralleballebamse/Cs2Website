@@ -12,7 +12,7 @@ async function main() {
     let countItems = 0; // Starts at 1 because list starts at 0
     let totalItemDisplayed = 9; // 9 items displayed in start
     let arrayAssets = new Array; // Array for avoiding dublications of items
-    const steamid = "76561198992052209";
+    const steamid = "76561198158780614";
     const steamLink = `/steam?steamid=${steamid}`;
 
     steamInventoryData = await loadfiles(steamLink);
@@ -67,6 +67,8 @@ async function main() {
                     invData.descriptions[i].tags.some(tag =>
                         tag.category === "Type" &&
                         tag.internal_name.startsWith("CSGO_Type_") &&
+                        !tag.internal_name.includes("MusicKit") &&
+                        !tag.internal_name.includes("Collectible") &&
                         !tag.internal_name.includes("Spray") &&
                         !tag.internal_name.includes("WeaponCase") ||
                         tag.internal_name.startsWith("Type_Hands")
