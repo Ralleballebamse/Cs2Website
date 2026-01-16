@@ -4,7 +4,7 @@ const router = express.Router();
 
 router.get("/price", async (req, res) => {
   const appid = req.query.appid || "730";
-  const currency = req.query.currency || "3";
+  const currency = req.query.currency || "18";
   const name = req.query.name;
 
   if (!name) return res.status(400).json({ error: "Missing name" });
