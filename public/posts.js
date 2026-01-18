@@ -22,12 +22,12 @@ async function main() {
 
     const loadMoreBtn = document.getElementById("loadMoreBtn");
     loadMoreBtn.addEventListener("click", () => {
-        loadMorePosts();
+        loadMoreItems();
     });
 
     const postContainer = document.getElementById("posts");
 
-    loadMorePosts();
+    loadMoreItems();
 
     function createItemInspectLink(z) {
         const asset = invData.assets[z];
@@ -42,7 +42,7 @@ async function main() {
         return (inspectLink)
     }
 
-    async function loadMorePosts() {
+    async function loadMoreItems() {
         const end = countItems + totalItemDisplayed;
 
         let i = countItems;
