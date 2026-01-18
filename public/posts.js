@@ -25,7 +25,12 @@ async function main() {
         loadMoreItems();
     });
 
-    const postContainer = document.getElementById("posts");
+    const sortItemsByHighPriceToLow = document.getElementById("sortItemsByHighPriceToLowBtn");
+    sortItemsByHighPriceToLow.addEventListener("click", () => {
+        sortItemsByHighPriceToLowFunction();
+    });
+
+    const normalPostContainer = document.getElementById("posts");
 
     loadMoreItems();
 
@@ -40,6 +45,24 @@ async function main() {
             .replace("%assetid%", asset.assetid);
 
         return (inspectLink)
+    }
+
+    const testContainer = document.createElement("div");
+
+
+    async function sortItemsByHighPriceToLowFunction() {
+        displayVisibleOrHidden(normalPostContainer, testContainer)
+
+    }
+
+    function displayVisibleOrHidden(show = showcontainer, hide = hideContainer){
+        if (show.style.visibility === "hidden"){
+            hide.style.visibility = "hidden";
+            show.style.visibility = "visible";
+        }else{
+            show.style.visibility = "hidden";
+            hide.style.visibility = "visible";
+        }
     }
 
     async function loadMoreItems() {
@@ -86,7 +109,7 @@ async function main() {
                     post.append(itemName, itemImage, itemPrice);
                 }
                 i++
-                postContainer.append(post);
+                normalPostContainer.append(post);
             }
             countItems = end;
         }
