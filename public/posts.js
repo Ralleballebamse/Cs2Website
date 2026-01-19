@@ -28,8 +28,6 @@ async function main() {
 
     const itemDB = await res.json();
 
-    // fetchData("Souvenir MP7 | Prey (Field-Tested)", "$");
-
     async function fetchData(marketName, currency) {
         const currencyId = currency === "€" ? 3 : 1;
         const response = await fetch(
