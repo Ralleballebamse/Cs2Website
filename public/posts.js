@@ -10,7 +10,7 @@ async function loadfiles(link) {
 
 async function main() {
     let countItems = 0; // Starts at 1 because list starts at 0
-    let totalItemDisplayed = 9; // 9 items displayed in start
+    let totalItemDisplayed = 1000; // 9 items displayed in start
     let arrayAssets = new Array; // Array for avoiding dublications of items
     let arrayMarketHashNames = new Array; // Array for all market hast names that being send to steam market place to recive lowest value
 
@@ -35,6 +35,12 @@ async function main() {
         );
         const test = await response.json();
 
+        console.log(test)
+        console.log("1")
+        if (test.length == 0){
+            return("Undefined")
+        }
+
         let price = [];
 
         if (currency === "€") {
@@ -44,7 +50,6 @@ async function main() {
             price = currency + test.sell_order_table.split("$")[1].split("<")[0];
         }
 
-        console.log(price);
         return (price)
     }
 
