@@ -11,7 +11,7 @@ async function loadfiles(link) {
 async function main() {
     const sleep = (ms) => new Promise((r) => setTimeout(r, ms)); // This is for making an await sleep
     let countItems = 0; // Starts at 1 because list starts at 0
-    let totalItemDisplayed = 1000; // 9 items displayed in start
+    let totalItemDisplayed = 25; // 9 items displayed in start
     let arrayAssets = new Array; // Array for avoiding dublications of items
 
     const steamid = "76561198992052209";
@@ -74,8 +74,13 @@ async function main() {
         sortItemsByHighPriceToLowFunction();
     });
 
+    const switchToMain = document.getElementById("switchToMain");
+    switchToMain.addEventListener("click", () => {
+        displayVisibleOrHidden(testContainer, normalPostContainer);
+    });
+
     const normalPostContainer = document.getElementById("posts");
-    const testContainer = document.createElement("div");
+    const testContainer = document.getElementById("sortedPosts");
 
     loadMoreItems();
 
@@ -93,17 +98,35 @@ async function main() {
     }
 
     async function sortItemsByHighPriceToLowFunction() {
-        displayVisibleOrHidden(normalPostContainer, testContainer)
+        displayVisibleOrHidden(normalPostContainer, testContainer);
+        const posts = Array.from(normalPostContainer.querySelectorAll(".post"));
+        posts.sort((a, b) => {
+            const priceA = parseFloat(
+                a.querySelector("h6").textContent.replace(/[^0-9.]/g, "")
+            );
+            const priceB = parseFloat(
+                b.querySelector("h6").textContent.replace(/[^0-9.]/g, "")
+            );
 
+            return priceB - priceA;
+        })
+
+        if (invData.descriptions.length > posts.length){
+            testContainer.innerHTML = "";
+            posts.forEach(post => {
+            const clone = post.cloneNode(true);
+            testContainer.appendChild(clone);
+        })
+        }
     }
 
     function displayVisibleOrHidden(show = showcontainer, hide = hideContainer) {
-        if (show.style.visibility === "hidden") {
-            hide.style.visibility = "hidden";
-            show.style.visibility = "visible";
+        if (show.style.display === "hidden") {
+            hide.style.display = "none";
+            show.style.display = "grid";
         } else {
-            show.style.visibility = "hidden";
-            hide.style.visibility = "visible";
+            show.style.display = "none";
+            hide.style.display = "grid";
         }
     }
 
