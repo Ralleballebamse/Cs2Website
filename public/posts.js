@@ -13,6 +13,7 @@ async function main() {
     let countItems = 0; // Starts at 1 because list starts at 0
     let totalItemDisplayed = 25; // 9 items displayed in start
     let arrayAssets = new Array; // Array for avoiding dublications of items
+    let sort = "";
 
     const steamid = "76561198992052209";
     const steamLink = `/steam?steamid=${steamid}`;
@@ -71,7 +72,12 @@ async function main() {
 
     const sortItemsByHighPriceToLow = document.getElementById("sortItemsByHighPriceToLowBtn");
     sortItemsByHighPriceToLow.addEventListener("click", () => {
-        sortItemsByHighPriceToLowFunction();
+        sortItemsByHighPriceToLowFunction("HighToLow");
+    });
+
+    const sortItemsByLowPriceToHigh = document.getElementById("sortItemsByLowPriceToHighBtn");
+    sortItemsByLowPriceToHigh.addEventListener("click", () => {
+        sortItemsByHighPriceToLowFunction("LowToHigh");
     });
 
     const switchToMain = document.getElementById("switchToMain");
@@ -97,7 +103,7 @@ async function main() {
         return (inspectLink)
     }
 
-    async function sortItemsByHighPriceToLowFunction() {
+    async function sortItemsByHighPriceToLowFunction(sort) {
         displayVisibleOrHidden(normalPostContainer, testContainer);
         const posts = Array.from(normalPostContainer.querySelectorAll(".post"));
         posts.sort((a, b) => {
@@ -108,15 +114,19 @@ async function main() {
                 b.querySelector("h6").textContent.replace(/[^0-9.]/g, "")
             );
 
-            return priceB - priceA;
+            if (sort === "HighToLow"){
+                return priceB - priceA;
+            }else if (sort === "LowToHigh"){
+                return priceA - priceB;
+            }
         })
 
-        if (invData.descriptions.length > posts.length){
+        if (invData.descriptions.length > posts.length) {
             testContainer.innerHTML = "";
             posts.forEach(post => {
-            const clone = post.cloneNode(true);
-            testContainer.appendChild(clone);
-        })
+                const clone = post.cloneNode(true);
+                testContainer.appendChild(clone);
+            })
         }
     }
 
