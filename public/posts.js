@@ -41,7 +41,6 @@ async function main() {
 
             const loadMoreWrapper = document.getElementById("loadMoreWrapper");
             const steamProfileButton = document.createElement("button");
-            steamProfileButton.textContent = `Button ${x + 1}`;
             const steamName = document.createElement("h4");
             const steamProfilePicture = document.createElement("img");
 
