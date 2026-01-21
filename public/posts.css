@@ -131,7 +131,7 @@ body {
     margin-bottom: 40px;
 }
 
-.loadMoreWrapper button {
+#sidebar button {
     background-color: #202020;
     color: var(--text);
     border: 2px solid var(--text);
@@ -143,7 +143,7 @@ body {
     display: flex;
 }
 
-.loadMoreWrapper button img{
+#sidebar button img{
     width: 25%;
     margin: 10px;
 }

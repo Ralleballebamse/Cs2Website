@@ -13,7 +13,6 @@ async function main() {
     let countItems = 0; // Starts at 1 because list starts at 0
     let totalItemDisplayed = 25; // 9 items displayed in start
     let arrayAssets = new Array; // Array for avoiding dublications of items
-    let sort = "";
 
     const steamid = "76561198992052209";
     const steamLink = `/steam?steamid=${steamid}`;
@@ -29,27 +28,28 @@ async function main() {
 
     const itemDB = await res.json();
 
-    let hello = ["76561198992052209", "76561198158780614"]
+    let hello = ["76561198992052209", "76561198158780614", "76561198063864524"]
     const steamProfileButtons = [];
 
     await fetchSteamId(hello);
 
     async function fetchSteamId(steamid) {
+        const profileContainer = document.getElementById("multipleProfileButtons");
         for (let x = 0; x < steamid.length; x++) {
             const r = await fetch(`/steam/profile?steamid=${steamid[x]}`);
             const data = await r.json();
 
-            const loadMoreWrapper = document.getElementById("loadMoreWrapper");
-            const steamProfileButton = document.createElement("button");
-            const steamName = document.createElement("h4");
-            const steamProfilePicture = document.createElement("img");
+            const btn = document.createElement("button");
+            const name = document.createElement("h4");
+            const img = document.createElement("img");
 
-            steamName.textContent = data.name;
-            steamProfilePicture.src = data.avatar;
-            steamProfileButton.append(steamProfilePicture, steamName);
-            loadMoreWrapper.append(steamProfileButton);
-            steamProfileButtons.push(steamProfileButton);
-            console.log(steamProfileButtons);
+            name.textContent = data.name;
+            img.src = data.avatar;
+            btn.append(img, name);
+
+            btn.dataset.steamid = steamid[x];
+
+            profileContainer.append(btn);
         }
     }
 
@@ -94,12 +94,11 @@ async function main() {
         loadMoreItems();
     });
 
-    steamProfileButtons[0].addEventListener("click", () => {
+    const steamProfileButtonAll = document.getElementById("multipleProfileButtons")
+    steamProfileButtonAll.addEventListener("click", (e) => {
+        const btn = e.target.closest("button");
         console.log("1");
-    });
-
-    steamProfileButtons[1].addEventListener("click", () => {
-        console.log("2");
+        console.log(btn.dataset.steamid);
     });
 
     const sortItemsByHighPriceToLow = document.getElementById("sortItemsByHighPriceToLowBtn");
