@@ -82,11 +82,11 @@ async function main() {
 
     const switchToMain = document.getElementById("switchToMain");
     switchToMain.addEventListener("click", () => {
-        displayVisibleOrHidden(testContainer, normalPostContainer);
+        displayVisibleOrHidden(itemSortContainer, normalPostContainer);
     });
 
     const normalPostContainer = document.getElementById("posts");
-    const testContainer = document.getElementById("sortedPosts");
+    const itemSortContainer = document.getElementById("sortedPosts");
 
     loadMoreItems();
 
@@ -104,7 +104,7 @@ async function main() {
     }
 
     async function sortItemsByHighPriceToLowFunction(sort) {
-        displayVisibleOrHidden(normalPostContainer, testContainer);
+        displayVisibleOrHidden(normalPostContainer, itemSortContainer);
         const posts = Array.from(normalPostContainer.querySelectorAll(".post"));
         posts.sort((a, b) => {
             const priceA = parseFloat(
@@ -122,10 +122,10 @@ async function main() {
         })
 
         if (invData.descriptions.length > posts.length) {
-            testContainer.innerHTML = "";
+            itemSortContainer.innerHTML = "";
             posts.forEach(post => {
                 const clone = post.cloneNode(true);
-                testContainer.appendChild(clone);
+                itemSortContainer.appendChild(clone);
             })
         }
     }
