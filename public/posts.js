@@ -29,6 +29,31 @@ async function main() {
 
     const itemDB = await res.json();
 
+    let hello = ["76561198992052209", "76561198158780614"]
+    const steamProfileButtons = [];
+
+    await fetchSteamId(hello);
+
+    async function fetchSteamId(steamid) {
+        for (let x = 0; x < steamid.length; x++) {
+            const r = await fetch(`/steam/profile?steamid=${steamid[x]}`);
+            const data = await r.json();
+
+            const loadMoreWrapper = document.getElementById("loadMoreWrapper");
+            const steamProfileButton = document.createElement("button");
+            steamProfileButton.textContent = `Button ${x + 1}`;
+            const steamName = document.createElement("h4");
+            const steamProfilePicture = document.createElement("img");
+
+            steamName.textContent = data.name;
+            steamProfilePicture.src = data.avatar;
+            steamProfileButton.append(steamProfilePicture, steamName);
+            loadMoreWrapper.append(steamProfileButton);
+            steamProfileButtons.push(steamProfileButton);
+            console.log(steamProfileButtons);
+        }
+    }
+
     async function fetchData(marketName, currency) {
         const currencyId = currency === "€" ? 3 : 1;
 
@@ -70,6 +95,14 @@ async function main() {
         loadMoreItems();
     });
 
+    steamProfileButtons[0].addEventListener("click", () => {
+        console.log("1");
+    });
+
+    steamProfileButtons[1].addEventListener("click", () => {
+        console.log("2");
+    });
+
     const sortItemsByHighPriceToLow = document.getElementById("sortItemsByHighPriceToLowBtn");
     sortItemsByHighPriceToLow.addEventListener("click", () => {
         sortItemsByHighPriceToLowFunction("HighToLow");
@@ -84,6 +117,11 @@ async function main() {
     switchToMain.addEventListener("click", () => {
         displayVisibleOrHidden(itemSortContainer, normalPostContainer);
     });
+
+    // const switchToPeoplesPersonalInv = document.getElementById("switchToPeoplesPersonalInv");
+    // switchToPeoplesPersonalInv.addEventListener("click", () => {
+    //    fetchSteamId("76561198992052209");
+    // });
 
     const normalPostContainer = document.getElementById("posts");
     const itemSortContainer = document.getElementById("sortedPosts");
@@ -114,9 +152,9 @@ async function main() {
                 b.querySelector("h6").textContent.replace(/[^0-9.]/g, "")
             );
 
-            if (sort === "HighToLow"){
+            if (sort === "HighToLow") {
                 return priceB - priceA;
-            }else if (sort === "LowToHigh"){
+            } else if (sort === "LowToHigh") {
                 return priceA - priceB;
             }
         })
