@@ -29,12 +29,18 @@
         <div class = "main-wrap">
             <aside class = "sidebar">Left Stuff
                 <h2>Sidebar</h2>
+
+                <div class="loadMoreWrapper">
+                    <button id="sortItemsByHighPriceToLowBtn">Sort high to low</button>
+                    <button id="sortItemsByLowPriceToHighBtn">Sort low to high</button>
+                    <button id="switchToMain">Change back to main page</button>
+                </div>
+
             </aside>
 
             <main class = "main">
-                <div class = "posts" id = "posts">
-
-                </div> 
+                <div class = "posts" id = "posts"></div> 
+                <div class= "posts" id="sortedPosts"></div>
 
                 <div class="loadMoreWrapper">
                     <button id="loadMoreBtn">Load more items</button>

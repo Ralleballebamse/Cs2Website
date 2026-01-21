@@ -9,9 +9,12 @@ async function loadfiles(link) {
 }
 
 async function main() {
+    const sleep = (ms) => new Promise((r) => setTimeout(r, ms)); // This is for making an await sleep
     let countItems = 0; // Starts at 1 because list starts at 0
-    let totalItemDisplayed = 9; // 9 items displayed in start
+    let totalItemDisplayed = 25; // 9 items displayed in start
     let arrayAssets = new Array; // Array for avoiding dublications of items
+    let sort = "";
+
     const steamid = "76561198992052209";
     const steamLink = `/steam?steamid=${steamid}`;
 
@@ -20,14 +23,72 @@ async function main() {
 
     console.log(invData);
 
+    const res = await fetch(
+        "https://raw.githubusercontent.com/somespecialone/steam-item-name-ids/refs/heads/master/data/cs2.json",
+    );
+
+    const itemDB = await res.json();
+
+    async function fetchData(marketName, currency) {
+        const currencyId = currency === "€" ? 3 : 1;
+
+        const response = await fetch(
+            ` /api/steam?item_nameid=${itemDB[marketName]}&currency=${currencyId}`
+        );
+
+        const test = await response.json();
+
+        let price = [];
+
+        try {
+            if (currency === "€") {
+                price = test.sell_order_table.split("€")[0].split(">");
+                price = price[price.length - 1] + currency;
+            } else {
+                price = currency + test.sell_order_table.split("$")[1].split("<")[0];
+            }
+        } catch (err) {
+            for (let z = 0; z < 5; z++) {
+                await sleep(z * 1000);
+                try {
+                    const res = await fetch(
+                        `/api/steam/lowest?name=${encodeURIComponent(marketName)}&currency=${currencyId}`
+                    );
+                    const priceText = (await res.text()).trim();
+                    return (priceText)
+                } catch (err) {
+                    continue;
+                }
+            }
+            return ("Undefined");
+        }
+        return (price)
+    }
+
     const loadMoreBtn = document.getElementById("loadMoreBtn");
     loadMoreBtn.addEventListener("click", () => {
-        loadMorePosts();
+        loadMoreItems();
     });
 
-    const postContainer = document.getElementById("posts");
+    const sortItemsByHighPriceToLow = document.getElementById("sortItemsByHighPriceToLowBtn");
+    sortItemsByHighPriceToLow.addEventListener("click", () => {
+        sortItemsByHighPriceToLowFunction("HighToLow");
+    });
 
-    loadMorePosts();
+    const sortItemsByLowPriceToHigh = document.getElementById("sortItemsByLowPriceToHighBtn");
+    sortItemsByLowPriceToHigh.addEventListener("click", () => {
+        sortItemsByHighPriceToLowFunction("LowToHigh");
+    });
+
+    const switchToMain = document.getElementById("switchToMain");
+    switchToMain.addEventListener("click", () => {
+        displayVisibleOrHidden(itemSortContainer, normalPostContainer);
+    });
+
+    const normalPostContainer = document.getElementById("posts");
+    const itemSortContainer = document.getElementById("sortedPosts");
+
+    loadMoreItems();
 
     function createItemInspectLink(z) {
         const asset = invData.assets[z];
@@ -42,8 +103,46 @@ async function main() {
         return (inspectLink)
     }
 
-    async function loadMorePosts() {
+    async function sortItemsByHighPriceToLowFunction(sort) {
+        displayVisibleOrHidden(normalPostContainer, itemSortContainer);
+        const posts = Array.from(normalPostContainer.querySelectorAll(".post"));
+        posts.sort((a, b) => {
+            const priceA = parseFloat(
+                a.querySelector("h6").textContent.replace(/[^0-9.]/g, "")
+            );
+            const priceB = parseFloat(
+                b.querySelector("h6").textContent.replace(/[^0-9.]/g, "")
+            );
+
+            if (sort === "HighToLow"){
+                return priceB - priceA;
+            }else if (sort === "LowToHigh"){
+                return priceA - priceB;
+            }
+        })
+
+        if (invData.descriptions.length > posts.length) {
+            itemSortContainer.innerHTML = "";
+            posts.forEach(post => {
+                const clone = post.cloneNode(true);
+                itemSortContainer.appendChild(clone);
+            })
+        }
+    }
+
+    function displayVisibleOrHidden(show = showcontainer, hide = hideContainer) {
+        if (show.style.display === "hidden") {
+            hide.style.display = "none";
+            show.style.display = "grid";
+        } else {
+            show.style.display = "none";
+            hide.style.display = "grid";
+        }
+    }
+
+    async function loadMoreItems() {
         const end = countItems + totalItemDisplayed;
+
 
         let i = countItems;
         for (let z = 0; z <= invData.assets.length - 1 && i < end; z++) {
@@ -60,13 +159,26 @@ async function main() {
                 itemImage.src = `https://community.cloudflare.steamstatic.com/economy/image/${invData.descriptions[i].icon_url}`;
 
                 const itemPrice = document.createElement("h6");
-                itemPrice.textContent = "Market value: ";
+                if (invData.descriptions[i].tags.some(
+                    tag => tag.category === ("Type") &&
+                        tag.internal_name.startsWith("CSGO_Type_") &&
+                        !tag.internal_name.includes("MusicKit") &&
+                        !tag.internal_name.includes("Collectible") ||
+                        tag.internal_name.startsWith("Type_Hands") ||
+                        tag.internal_name.startsWith("CSGO_Tool_Sticker")
+                )) {
+                    itemPrice.textContent = `Market value : ${await fetchData(invData.descriptions[i].market_hash_name, "$")}`;
+                } else {
+                    itemPrice.textContent = "Market value : Undefined";
+                }
 
                 if (
                     invData.descriptions[i].tags &&
                     invData.descriptions[i].tags.some(tag =>
                         tag.category === "Type" &&
                         tag.internal_name.startsWith("CSGO_Type_") &&
+                        !tag.internal_name.includes("MusicKit") &&
+                        !tag.internal_name.includes("Collectible") &&
                         !tag.internal_name.includes("Spray") &&
                         !tag.internal_name.includes("WeaponCase") ||
                         tag.internal_name.startsWith("Type_Hands")
@@ -84,13 +196,14 @@ async function main() {
                     post.append(itemName, itemImage, itemPrice);
                 }
                 i++
-                postContainer.append(post);
+                normalPostContainer.append(post);
             }
             countItems = end;
         }
-    }
-    if (countItems >= invData.descriptions.length) {
-        loadMoreBtn.style.display = "none";
+
+        if (countItems >= invData.descriptions.length) {
+            loadMoreBtn.style.display = "none";
+        }
     }
 }
 
