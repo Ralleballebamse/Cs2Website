@@ -19,7 +19,7 @@ router.get("/steam/profile", async (req, res) => {
     const name = html.substring(nameStart, nameEnd).trim();
 
     // ---- Full Avatar (from img srcset) ----
-    const srcsetTag = 'srcset="';
+    const srcsetTag = '<img srcset="';
     const srcsetStart = html.indexOf(srcsetTag) + srcsetTag.length;
     const srcsetEnd = html.indexOf('"', srcsetStart);
     const avatar = html.substring(srcsetStart, srcsetEnd);
