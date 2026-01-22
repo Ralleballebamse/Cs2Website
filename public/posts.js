@@ -13,14 +13,20 @@ async function main() {
     let countItems = 0; // Starts at 1 because list starts at 0
     let totalItemDisplayed = 25; // 9 items displayed in start
     let arrayAssets = new Array; // Array for avoiding dublications of items
+    const containers = [];
+    let lastShown = null;
 
-    const steamid = "76561198992052209";
-    const steamLink = `/steam?steamid=${steamid}`;
+    async function loadInSteamData(steamid) {
+        const steamLink = `/steam?steamid=${steamid}`;
 
-    steamInventoryData = await loadfiles(steamLink);
-    invData = steamInventoryData;
+        steamInventoryData = await loadfiles(steamLink);
+        invData = steamInventoryData;
+        console.log(invData);
 
-    console.log(invData);
+        return (invData);
+    }
+
+    const mainContainer = document.getElementById("mainContainer");
 
     const res = await fetch(
         "https://raw.githubusercontent.com/somespecialone/steam-item-name-ids/refs/heads/master/data/cs2.json",
@@ -31,26 +37,33 @@ async function main() {
     let hello = ["76561198992052209", "76561198158780614", "76561198063864524"]
     const steamProfileButtons = [];
 
-    await fetchSteamId(hello);
-
     async function fetchSteamId(steamid) {
+        let x = 0;
+        x++;
         const profileContainer = document.getElementById("multipleProfileButtons");
-        for (let x = 0; x < steamid.length; x++) {
-            const r = await fetch(`/steam/profile?steamid=${steamid[x]}`);
-            const data = await r.json();
+        const r = await fetch(`/steam/profile?steamid=${steamid}`);
+        const data = await r.json();
 
-            const btn = document.createElement("button");
-            const name = document.createElement("h4");
-            const img = document.createElement("img");
+        const btn = document.createElement("button");
+        const name = document.createElement("h4");
+        const img = document.createElement("img");
+        const ContainerPerSteamAccount = document.createElement("div");
+        ContainerPerSteamAccount.classList.add("posts");
+        ContainerPerSteamAccount.style.display = "none";
+        containers.push(ContainerPerSteamAccount);
+        console.log(containers);
 
-            name.textContent = data.name;
-            img.src = data.avatar;
-            btn.append(img, name);
 
-            btn.dataset.steamid = steamid[x];
+        mainContainer.append(ContainerPerSteamAccount);
 
-            profileContainer.append(btn);
-        }
+        name.textContent = data.name;
+        img.src = data.avatar;
+        btn.append(img, name);
+
+        btn.dataset.steamid = steamid;
+
+        profileContainer.append(btn);
+        return (ContainerPerSteamAccount);
     }
 
     async function fetchData(marketName, currency) {
@@ -89,16 +102,19 @@ async function main() {
         return (price)
     }
 
-    const loadMoreBtn = document.getElementById("loadMoreBtn");
-    loadMoreBtn.addEventListener("click", () => {
-        loadMoreItems();
-    });
-
     const steamProfileButtonAll = document.getElementById("multipleProfileButtons")
     steamProfileButtonAll.addEventListener("click", (e) => {
         const btn = e.target.closest("button");
-        console.log("1");
-        console.log(btn.dataset.steamid);
+        // Get all buttons inside the container
+        const buttons = steamProfileButtonAll.querySelectorAll("button");
+
+        // Find this button's index
+        const index = Array.from(buttons).indexOf(btn);
+
+
+
+        console.log("Button number:", index); // +1 = human-friendly
+        displayVisibleOrHidden(containers[index]);
     });
 
     const sortItemsByHighPriceToLow = document.getElementById("sortItemsByHighPriceToLowBtn");
@@ -113,20 +129,15 @@ async function main() {
 
     const switchToMain = document.getElementById("switchToMain");
     switchToMain.addEventListener("click", () => {
-        displayVisibleOrHidden(itemSortContainer, normalPostContainer);
+        displayVisibleOrHidden(normalPostContainer);
     });
-
-    // const switchToPeoplesPersonalInv = document.getElementById("switchToPeoplesPersonalInv");
-    // switchToPeoplesPersonalInv.addEventListener("click", () => {
-    //    fetchSteamId("76561198992052209");
-    // });
 
     const normalPostContainer = document.getElementById("posts");
     const itemSortContainer = document.getElementById("sortedPosts");
+    itemSortContainer.style.display = "none";
+    lastShown = normalPostContainer;
 
-    loadMoreItems();
-
-    function createItemInspectLink(z) {
+    function createItemInspectLink(z, steamid) {
         const asset = invData.assets[z];
         const desc = invData.descriptions.find(d =>
             d.classid === asset.classid &&
@@ -140,8 +151,9 @@ async function main() {
     }
 
     async function sortItemsByHighPriceToLowFunction(sort) {
-        displayVisibleOrHidden(normalPostContainer, itemSortContainer);
+        displayVisibleOrHidden(itemSortContainer);
         const posts = Array.from(normalPostContainer.querySelectorAll(".post"));
+        console.log(posts)
         posts.sort((a, b) => {
             const priceA = parseFloat(
                 a.querySelector("h6").textContent.replace(/[^0-9.]/g, "")
@@ -157,28 +169,62 @@ async function main() {
             }
         })
 
-        if (invData.descriptions.length > posts.length) {
-            itemSortContainer.innerHTML = "";
-            posts.forEach(post => {
-                const clone = post.cloneNode(true);
-                itemSortContainer.appendChild(clone);
-            })
-        }
+        itemSortContainer.innerHTML = "";
+        posts.forEach(post => {
+            itemSortContainer.appendChild(post.cloneNode(true));
+        });
     }
 
-    function displayVisibleOrHidden(show = showcontainer, hide = hideContainer) {
-        if (show.style.display === "hidden") {
-            hide.style.display = "none";
-            show.style.display = "grid";
-        } else {
-            show.style.display = "none";
-            hide.style.display = "grid";
+    function displayVisibleOrHidden(show) {
+        if (!show) return;
+
+        if (lastShown && lastShown !== show) {
+            lastShown.style.display = "none";
         }
+
+        show.style.display = "grid";
+        lastShown = show;
     }
 
-    async function loadMoreItems() {
+
+
+
+
+
+    async function runAndStream() {
+        console.log("Starting all tasks...\n");
+
+        for (let i = 1; i <= 3; i++) {
+            const taskName = `Task ${i}`;
+
+            // Start the async work
+            steamdata = await loadInSteamData(hello[i - 1]);
+            console.log(hello[i])
+            ContainerPerSteamAccount = await fetchSteamId(hello[i - 1]);
+            const promise = loadMoreItems(steamdata, hello[i - 1], ContainerPerSteamAccount);
+
+            // Attach a handler for WHEN it finishes
+            promise.then(result => {
+                console.log("STREAM:", result);
+            });
+        }
+
+        console.log("\nAll tasks have been started (but not finished yet)");
+    }
+    await runAndStream();
+
+
+
+
+
+
+
+
+
+
+    async function loadMoreItems(invData, steamid, ContainerPerSteamAccount) {
         const end = countItems + totalItemDisplayed;
-
+        console.log(invData);
 
         let i = countItems;
         for (let z = 0; z <= invData.assets.length - 1 && i < end; z++) {
@@ -189,7 +235,9 @@ async function main() {
                 post.classList.add("post");
 
                 const itemName = document.createElement("h4");
-                itemName.textContent = invData.descriptions[i].name;
+                if (!invData.descriptions[i].name == undefined) {
+                    itemName.textContent = invData.descriptions[i].name;
+                }
 
                 const itemImage = document.createElement("img");
                 itemImage.src = `https://community.cloudflare.steamstatic.com/economy/image/${invData.descriptions[i].icon_url}`;
@@ -224,7 +272,7 @@ async function main() {
                     inspectBtn.textContent = "Inspect";
 
                     inspectBtn.addEventListener("click", () => {
-                        const link = createItemInspectLink(z);
+                        const link = createItemInspectLink(z, steamid);
                         window.location.href = link;
                     });
                     post.append(itemName, itemImage, itemPrice, inspectBtn);
@@ -233,13 +281,12 @@ async function main() {
                 }
                 i++
                 normalPostContainer.append(post);
+                const clone = post.cloneNode(true);
+                ContainerPerSteamAccount.append(clone);
             }
             countItems = end;
         }
-
-        if (countItems >= invData.descriptions.length) {
-            loadMoreBtn.style.display = "none";
-        }
+        mainContainer.append(ContainerPerSteamAccount);
     }
 }
 
