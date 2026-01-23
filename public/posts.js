@@ -11,7 +11,7 @@ async function loadfiles(link) {
 async function main() {
     const sleep = (ms) => new Promise((r) => setTimeout(r, ms)); // This is for making an await sleep
     let countItems = 0; // Starts at 1 because list starts at 0
-    let totalItemDisplayed = 25; // 9 items displayed in start
+    let totalItemDisplayed = 200; // 9 items displayed in start
     let arrayAssets = new Array; // Array for avoiding dublications of items
     const containers = [];
     let lastShown = null;
@@ -97,7 +97,6 @@ async function main() {
                     continue;
                 }
             }
-            return ("Undefined");
         }
         return (price)
     }
@@ -223,69 +222,51 @@ async function main() {
 
 
     async function loadMoreItems(invData, steamid, ContainerPerSteamAccount) {
-        const end = countItems + totalItemDisplayed;
-        console.log(invData);
+        const descByClass = new Map(invData.descriptions.map(d => [d.classid, d]));
 
-        let i = countItems;
-        for (let z = 0; z <= invData.assets.length - 1 && i < end; z++) {
-            if (!arrayAssets.includes(invData.assets[z].classid)) {
-                arrayAssets.push(invData.assets[z].classid);
+        for (let z = 0; z < invData.assets.length; z++) {
+            const asset = invData.assets[z];
+            const classid = asset?.classid;
+            if (!classid) continue;
 
-                const post = document.createElement("div");
-                post.classList.add("post");
+            if (arrayAssets.includes(classid)) continue;
+            arrayAssets.push(classid);
 
-                const itemName = document.createElement("h4");
-                if (!invData.descriptions[i].name == undefined) {
-                    itemName.textContent = invData.descriptions[i].name;
-                }
+            const desc = descByClass.get(classid);
+            if (!desc) continue;
 
-                const itemImage = document.createElement("img");
-                itemImage.src = `https://community.cloudflare.steamstatic.com/economy/image/${invData.descriptions[i].icon_url}`;
+            const post = document.createElement("div");
+            post.classList.add("post");
 
-                const itemPrice = document.createElement("h6");
-                if (invData.descriptions[i].tags.some(
-                    tag => tag.category === ("Type") &&
-                        tag.internal_name.startsWith("CSGO_Type_") &&
-                        !tag.internal_name.includes("MusicKit") &&
-                        !tag.internal_name.includes("Collectible") ||
-                        tag.internal_name.startsWith("Type_Hands") ||
-                        tag.internal_name.startsWith("CSGO_Tool_Sticker")
-                )) {
-                    itemPrice.textContent = `Market value : ${await fetchData(invData.descriptions[i].market_hash_name, "$")}`;
-                } else {
-                    itemPrice.textContent = "Market value : Undefined";
-                }
+            const itemName = document.createElement("h4");
+            itemName.textContent = desc.name;
 
-                if (
-                    invData.descriptions[i].tags &&
-                    invData.descriptions[i].tags.some(tag =>
-                        tag.category === "Type" &&
-                        tag.internal_name.startsWith("CSGO_Type_") &&
-                        !tag.internal_name.includes("MusicKit") &&
-                        !tag.internal_name.includes("Collectible") &&
-                        !tag.internal_name.includes("Spray") &&
-                        !tag.internal_name.includes("WeaponCase") ||
-                        tag.internal_name.startsWith("Type_Hands")
-                    )
-                ) {
-                    const inspectBtn = document.createElement("button");
-                    inspectBtn.textContent = "Inspect";
+            const itemImage = document.createElement("img");
+            itemImage.src = `https://community.cloudflare.steamstatic.com/economy/image/${desc.icon_url ?? ""}`;
 
-                    inspectBtn.addEventListener("click", () => {
-                        const link = createItemInspectLink(z, steamid);
-                        window.location.href = link;
-                    });
-                    post.append(itemName, itemImage, itemPrice, inspectBtn);
-                } else {
-                    post.append(itemName, itemImage, itemPrice);
-                }
-                i++
-                normalPostContainer.append(post);
-                const clone = post.cloneNode(true);
-                ContainerPerSteamAccount.append(clone);
+            const itemPrice = document.createElement("h6");
+
+            const priced = desc.tags?.some(tag =>
+                (tag.category === "Type" &&
+                    tag.internal_name.startsWith("CSGO_Type_") &&
+                    !tag.internal_name.includes("MusicKit") &&
+                    !tag.internal_name.includes("Collectible")) ||
+                tag.internal_name.startsWith("Type_Hands") ||
+                tag.internal_name.startsWith("CSGO_Tool_Sticker")
+            );
+
+            if (priced) {
+                itemPrice.textContent = `Market value : ${await fetchData(desc.market_hash_name, "$")}`;
+            } else {
+                itemPrice.textContent = "Market value : $0.01";
             }
-            countItems = end;
+
+            post.append(itemName, itemImage, itemPrice);
+
+            normalPostContainer.append(post);
+            ContainerPerSteamAccount.append(post.cloneNode(true));
         }
+
         mainContainer.append(ContainerPerSteamAccount);
     }
 }
