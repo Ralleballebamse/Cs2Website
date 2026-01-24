@@ -51,8 +51,6 @@ async function main() {
         ContainerPerSteamAccount.classList.add("posts");
         ContainerPerSteamAccount.style.display = "none";
         containers.push(ContainerPerSteamAccount);
-        console.log(containers);
-
 
         mainContainer.append(ContainerPerSteamAccount);
 
@@ -65,6 +63,7 @@ async function main() {
         profileContainer.append(btn);
         return (ContainerPerSteamAccount);
     }
+
 
     async function fetchData(marketName, currency) {
         const currencyId = currency === "€" ? 3 : 1;
@@ -101,40 +100,40 @@ async function main() {
         return (price)
     }
 
+
     const steamProfileButtonAll = document.getElementById("multipleProfileButtons")
     steamProfileButtonAll.addEventListener("click", (e) => {
         const btn = e.target.closest("button");
-        // Get all buttons inside the container
         const buttons = steamProfileButtonAll.querySelectorAll("button");
-
-        // Find this button's index
         const index = Array.from(buttons).indexOf(btn);
 
-
-
-        console.log("Button number:", index); // +1 = human-friendly
         displayVisibleOrHidden(containers[index]);
     });
+
 
     const sortItemsByHighPriceToLow = document.getElementById("sortItemsByHighPriceToLowBtn");
     sortItemsByHighPriceToLow.addEventListener("click", () => {
         sortItemsByHighPriceToLowFunction("HighToLow");
     });
 
+
     const sortItemsByLowPriceToHigh = document.getElementById("sortItemsByLowPriceToHighBtn");
     sortItemsByLowPriceToHigh.addEventListener("click", () => {
         sortItemsByHighPriceToLowFunction("LowToHigh");
     });
+
 
     const switchToMain = document.getElementById("switchToMain");
     switchToMain.addEventListener("click", () => {
         displayVisibleOrHidden(normalPostContainer);
     });
 
+
     const normalPostContainer = document.getElementById("posts");
     const itemSortContainer = document.getElementById("sortedPosts");
     itemSortContainer.style.display = "none";
     lastShown = normalPostContainer;
+
 
     function createItemInspectLink(z, steamid) {
         const asset = invData.assets[z];
@@ -149,10 +148,10 @@ async function main() {
         return (inspectLink)
     }
 
+
     async function sortItemsByHighPriceToLowFunction(sort) {
         displayVisibleOrHidden(itemSortContainer);
         const posts = Array.from(normalPostContainer.querySelectorAll(".post"));
-        console.log(posts)
         posts.sort((a, b) => {
             const priceA = parseFloat(
                 a.querySelector("h6").textContent.replace(/[^0-9.]/g, "")
@@ -186,10 +185,6 @@ async function main() {
     }
 
 
-
-
-
-
     async function runAndStream() {
         console.log("Starting all tasks...\n");
 
@@ -198,7 +193,6 @@ async function main() {
 
             // Start the async work
             steamdata = await loadInSteamData(hello[i - 1]);
-            console.log(hello[i])
             ContainerPerSteamAccount = await fetchSteamId(hello[i - 1]);
             const promise = loadMoreItems(steamdata, hello[i - 1], ContainerPerSteamAccount);
 
@@ -270,6 +264,5 @@ async function main() {
         mainContainer.append(ContainerPerSteamAccount);
     }
 }
-
 
 main();
