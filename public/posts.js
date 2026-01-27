@@ -232,6 +232,7 @@ async function main() {
                 tag.internal_name.includes("Collectible") ||
                 tag.internal_name.includes("Sticker") ||
                 tag.internal_name.includes("Spray") ||
+                tag.internal_name.includes("Ticket") ||
                 tag.internal_name.includes("Tool")
             );
 
