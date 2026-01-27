@@ -217,17 +217,28 @@ async function main() {
 
     async function loadMoreItems(invData, steamid, ContainerPerSteamAccount) {
         const descByClass = new Map(invData.descriptions.map(d => [d.classid, d]));
+        console.log(descByClass);
 
         for (let z = 0; z < invData.assets.length; z++) {
             const asset = invData.assets[z];
             const classid = asset?.classid;
             if (!classid) continue;
 
-            if (arrayAssets.includes(classid)) continue;
-            arrayAssets.push(classid);
-
             const desc = descByClass.get(classid);
             if (!desc) continue;
+
+            const exclude = desc.tags?.some(tag =>
+                tag.internal_name.includes("MusicKit") ||
+                tag.internal_name.includes("Collectible") ||
+                tag.internal_name.includes("Sticker") ||
+                tag.internal_name.includes("Spray") ||
+                tag.internal_name.includes("Tool")
+            );
+
+            if (exclude) continue;
+
+            if (arrayAssets.includes(classid)) continue;
+            arrayAssets.push(classid);
 
             const post = document.createElement("div");
             post.classList.add("post");
