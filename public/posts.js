@@ -252,18 +252,9 @@ async function main() {
 
             const itemPrice = document.createElement("h6");
 
-            const priced = desc.tags?.some(tag =>
-                (tag.category === "Type" &&
-                    tag.internal_name.startsWith("CSGO_Type_") &&
-                    !tag.internal_name.includes("MusicKit") &&
-                    !tag.internal_name.includes("Collectible")) ||
-                tag.internal_name.startsWith("Type_Hands") ||
-                tag.internal_name.startsWith("CSGO_Tool_Sticker")
-            );
-
-            if (priced) {
+           try {
                 itemPrice.textContent = `Market value : ${await fetchData(desc.market_hash_name, "$")}`;
-            } else {
+            } catch (err) {
                 itemPrice.textContent = "Market value : $0.01";
             }
 
