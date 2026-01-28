@@ -15,6 +15,11 @@ async function main() {
     let arrayAssets = new Array; // Array for avoiding dublications of items
     const containers = [];
     let lastShown = null;
+    let heighestPrice = 0;
+    let minimunPrice = 0;
+    let followPriceRange = false;
+    let lowToHigh = false;
+    let highToLow = false;
 
     async function loadInSteamData(steamid) {
         const steamLink = `/steam?steamid=${steamid}`;
@@ -113,13 +118,21 @@ async function main() {
 
     const sortItemsByHighPriceToLow = document.getElementById("sortItemsByHighPriceToLowBtn");
     sortItemsByHighPriceToLow.addEventListener("click", () => {
-        sortItemsByHighPriceToLowFunction("HighToLow");
+        if (followPriceRange == true) {
+            sortItemsByHighPriceToLowFunction("HighToLow", itemUserDecidePriceContainer)
+        } else {
+            sortItemsByHighPriceToLowFunction("HighToLow", itemSortContainer);
+        }
     });
 
 
     const sortItemsByLowPriceToHigh = document.getElementById("sortItemsByLowPriceToHighBtn");
     sortItemsByLowPriceToHigh.addEventListener("click", () => {
-        sortItemsByHighPriceToLowFunction("LowToHigh");
+        if (followPriceRange == true) {
+            sortItemsByHighPriceToLowFunction("LowToHigh", itemUserDecidePriceContainer)
+        } else {
+            sortItemsByHighPriceToLowFunction("LowToHigh", itemSortContainer);
+        }
     });
 
 
@@ -149,8 +162,10 @@ async function main() {
         }
     });
 
-    priceHighTextArea.addEventListener("input", (e) => {
-        sortOutLowAndHighPrices(priceHighTextArea[0].value, priceHighTextArea[1].value)
+    priceHighTextArea.addEventListener("input", () => {
+        heighestPrice = priceHighTextArea[0].value;
+        minimunPrice = priceHighTextArea[1].value;
+        sortOutLowAndHighPrices(heighestPrice, minimunPrice, itemUserDecidePriceContainer);
     });
 
     function createItemInspectLink(assetid, steamid, link) {
@@ -159,11 +174,11 @@ async function main() {
             .replace("%assetid%", assetid);
     }
 
-    async function sortOutLowAndHighPrices(highValue, lowValue) {
-        if (highValue == ""){
+    async function sortOutLowAndHighPrices(highValue, lowValue, container) {
+        if (highValue == "") {
             highValue = 10000;
         }
-        itemUserDecidePriceContainer.innerHTML = "";
+        container.innerHTML = "";
         const posts = Array.from(normalPostContainer.querySelectorAll(".post"));
         posts.forEach(post => {
             const priceA = parseFloat(
@@ -171,16 +186,26 @@ async function main() {
             );
 
             if (priceA >= lowValue && priceA <= highValue) {
-                itemUserDecidePriceContainer.appendChild(post.cloneNode(true));
-                console.log(itemUserDecidePriceContainer);
+                container.appendChild(post.cloneNode(true));
             }
         });
-        displayVisibleOrHidden(itemUserDecidePriceContainer);
+
+        if (highValue == 10000 && lowValue == "") {
+            followPriceRange = false;
+            if (highToLow == true) {
+                sortItemsByHighPriceToLowFunction("HighToLow", itemSortContainer)
+            } else if (lowToHigh == true) {
+                sortItemsByHighPriceToLowFunction("LowToHigh", itemSortContainer)
+            }
+        } else {
+            followPriceRange = true;
+        }
+        displayVisibleOrHidden(container);
     }
 
-    async function sortItemsByHighPriceToLowFunction(sort) {
-        displayVisibleOrHidden(itemSortContainer);
-        const posts = Array.from(normalPostContainer.querySelectorAll(".post"));
+    async function sortItemsByHighPriceToLowFunction(sort, container) {
+        displayVisibleOrHidden(container);
+        const posts = Array.from(container.querySelectorAll(".post"));
         posts.sort((a, b) => {
             const priceA = parseFloat(
                 a.querySelector("h6").textContent.replace(/[^0-9.]/g, "")
@@ -190,15 +215,19 @@ async function main() {
             );
 
             if (sort === "HighToLow") {
+                highToLow = true;
+                lowToHigh = false;
                 return priceB - priceA;
             } else if (sort === "LowToHigh") {
+                lowToHigh = true;
+                highToLow = false;
                 return priceA - priceB;
             }
         })
 
-        itemSortContainer.innerHTML = "";
+        container.innerHTML = "";
         posts.forEach(post => {
-            itemSortContainer.appendChild(post.cloneNode(true));
+            container.appendChild(post.cloneNode(true));
         });
     }
 
