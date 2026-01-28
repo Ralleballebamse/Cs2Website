@@ -35,13 +35,23 @@
                     <button id="sortItemsByLowPriceToHighBtn">Sort low to high</button>
                     <button id="switchToMain">Change back to main page</button>
                 </div>
+                <form id="PriceToPrice" novalidate>
+                    <div class="field">
+                        <label for="PriceHigh">High</label>
+                        <textarea name="PriceHigh" id="PriceHigh" rows="1" maxlength="10"></textarea>
+                    </div>
+                    <div class="field">
+                        <label for="PriceLow">Low</label>
+                        <textarea name="PriceLow" id="PriceLow" rows="1" maxlength="10"></textarea>
+                    </div>
+                </form>
                 <div class="multipleProfileButtons" id="multipleProfileButtons">
                     <!-- Here is where all steam names and profile pictures adds -->
                 </div>
 
             </aside>
 
-            <main class="main" id = "mainContainer">
+            <main class="main" id="mainContainer">
                 <div class="posts" id="posts"></div>
                 <div class="posts" id="sortedPosts"></div>
             </main>

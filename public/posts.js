@@ -132,8 +132,26 @@ async function main() {
     const normalPostContainer = document.getElementById("posts");
     const itemSortContainer = document.getElementById("sortedPosts");
     itemSortContainer.style.display = "none";
+    const itemUserDecidePriceContainer = document.getElementById("sortedPosts");
+    itemUserDecidePriceContainer.style.display = "none";
     lastShown = normalPostContainer;
 
+    const priceHighTextArea = document.getElementById("PriceToPrice");
+    priceHighTextArea.addEventListener("keydown", (e) => {
+        console.log("Typing in:", e.target.id);
+        const allowed = [
+            "Backspace", "Delete", "ArrowLeft", "ArrowRight",
+            "ArrowUp", "ArrowDown", "Tab", "Enter"
+        ];
+
+        if (!/^[0-9]$/.test(e.key) && !allowed.includes(e.key)) {
+            e.preventDefault();
+        }
+    });
+
+    priceHighTextArea.addEventListener("input", (e) => {
+        sortOutLowAndHighPrices(priceHighTextArea[0].value, priceHighTextArea[1].value)
+    });
 
     function createItemInspectLink(assetid, steamid, link) {
         return link
@@ -141,6 +159,24 @@ async function main() {
             .replace("%assetid%", assetid);
     }
 
+    async function sortOutLowAndHighPrices(highValue, lowValue) {
+        if (highValue == ""){
+            highValue = 10000;
+        }
+        itemUserDecidePriceContainer.innerHTML = "";
+        const posts = Array.from(normalPostContainer.querySelectorAll(".post"));
+        posts.forEach(post => {
+            const priceA = parseFloat(
+                post.querySelector("h6").textContent.replace(/[^0-9.]/g, "")
+            );
+
+            if (priceA >= lowValue && priceA <= highValue) {
+                itemUserDecidePriceContainer.appendChild(post.cloneNode(true));
+                console.log(itemUserDecidePriceContainer);
+            }
+        });
+        displayVisibleOrHidden(itemUserDecidePriceContainer);
+    }
 
     async function sortItemsByHighPriceToLowFunction(sort) {
         displayVisibleOrHidden(itemSortContainer);
@@ -181,7 +217,7 @@ async function main() {
     async function runAndStream() {
         console.log("Starting all tasks...\n");
 
-        for (let i = 1; i <= 3; i++) {
+        for (let i = 1; i <= 1; i++) {
             const taskName = `Task ${i}`;
 
             // Start the async work
@@ -211,7 +247,7 @@ async function main() {
     async function loadMoreItems(invData, steamid, ContainerPerSteamAccount) {
         const descByClass = new Map(invData.descriptions.map(d => [d.classid, d]));
 
-        for (let z = 0; z < invData.assets.length; z++) {
+        for (let z = 0; z < 110; z++) { //invData.assets.length
             const asset = invData.assets[z];
             const classid = asset?.classid;
             if (!classid) continue;
