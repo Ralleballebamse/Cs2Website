@@ -135,17 +135,10 @@ async function main() {
     lastShown = normalPostContainer;
 
 
-    function createItemInspectLink(z, steamid) {
-        const asset = invData.assets[z];
-        const desc = invData.descriptions.find(d =>
-            d.classid === asset.classid &&
-            d.instanceid === asset.instanceid
-        );
-        const inspectLink = desc.actions[0].link
+    function createItemInspectLink(assetid, steamid, link) {
+        return link
             .replace("%owner_steamid%", steamid)
-            .replace("%assetid%", asset.assetid);
-
-        return (inspectLink)
+            .replace("%assetid%", assetid);
     }
 
 
@@ -217,7 +210,6 @@ async function main() {
 
     async function loadMoreItems(invData, steamid, ContainerPerSteamAccount) {
         const descByClass = new Map(invData.descriptions.map(d => [d.classid, d]));
-        console.log(descByClass);
 
         for (let z = 0; z < invData.assets.length; z++) {
             const asset = invData.assets[z];
@@ -252,7 +244,7 @@ async function main() {
 
             const itemPrice = document.createElement("h6");
 
-           try {
+            try {
                 itemPrice.textContent = `Market value : ${await fetchData(desc.market_hash_name, "$")}`;
             } catch (err) {
                 itemPrice.textContent = "Market value : $0.01";
