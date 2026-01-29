@@ -189,6 +189,12 @@ async function main() {
                 container.appendChild(post.cloneNode(true));
             }
         });
+        if (highToLow == true){
+            sortItemsByHighPriceToLowFunction("HighToLow", container)
+        }
+        else if (lowToHigh == true){
+            sortItemsByHighPriceToLowFunction("LowToHigh", container)
+        }
 
         if (highValue == 10000 && lowValue == "") {
             followPriceRange = false;
