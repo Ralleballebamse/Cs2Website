@@ -246,7 +246,7 @@ async function main() {
     async function runAndStream() {
         console.log("Starting all tasks...\n");
 
-        for (let i = 1; i <= 1; i++) {
+        for (let i = 1; i <= 2; i++) {
             const taskName = `Task ${i}`;
 
             // Start the async work
