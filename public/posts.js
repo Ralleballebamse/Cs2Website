@@ -136,7 +136,7 @@ async function main() {
         } else if (showSpecifiedPlayerInv == true) {
             sortItemsByHighPriceToLowFunction("HighToLow", containers[indexPlayerInv]);
         } else {
-            sortItemsByHighPriceToLowFunction("HighToLow", itemSortContainer);
+            sortItemsByHighPriceToLowFunction("HighToLow", normalPostContainer);
         }
     });
 
@@ -148,7 +148,7 @@ async function main() {
         } else if (showSpecifiedPlayerInv == true) {
             sortItemsByHighPriceToLowFunction("LowToHigh", containers[indexPlayerInv]);
         } else {
-            sortItemsByHighPriceToLowFunction("LowToHigh", itemSortContainer);
+            sortItemsByHighPriceToLowFunction("LowToHigh", normalPostContainer);
         }
     });
 
