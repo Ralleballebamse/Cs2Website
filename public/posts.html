@@ -14,38 +14,46 @@
 <body>
     <div class="container">
 
-        <header class = "header">
-            <nav class = "nav-list">
+        <header class="header">
+            <nav class="nav-list">
                 <h1>ShadowNet</h1>
                 <ul>
-                    <li><a href = "home.html">Home</a></li>
-                    <li><a id = "active" href = "posts.html">Posts</a></li>
-                    <li><a  href = "contact.html">Contact</a></li>
+                    <li><a href="home.html">Home</a></li>
+                    <li><a id="active" href="posts.html">Posts</a></li>
+                    <li><a href="contact.html">Contact</a></li>
                 </ul>
             </nav>
         </header>
 
 
-        <div class = "main-wrap">
-            <aside class = "sidebar">Left Stuff
+        <div class="main-wrap">
+            <aside class="sidebar" id="sidebar">Left Stuff
                 <h2>Sidebar</h2>
 
-                <div class="loadMoreWrapper">
+                <div class="loadMoreWrapper" id="loadMoreWrapper">
                     <button id="sortItemsByHighPriceToLowBtn">Sort high to low</button>
                     <button id="sortItemsByLowPriceToHighBtn">Sort low to high</button>
                     <button id="switchToMain">Change back to main page</button>
                 </div>
+                <form id="PriceToPrice" novalidate>
+                    <div class="field">
+                        <label for="PriceHigh">High</label>
+                        <textarea name="PriceHigh" id="PriceHigh" rows="1" maxlength="10"></textarea>
+                    </div>
+                    <div class="field">
+                        <label for="PriceLow">Low</label>
+                        <textarea name="PriceLow" id="PriceLow" rows="1" maxlength="10"></textarea>
+                    </div>
+                </form>
+                <div class="multipleProfileButtons" id="multipleProfileButtons">
+                    <!-- Here is where all steam names and profile pictures adds -->
+                </div>
 
             </aside>
 
-            <main class = "main">
-                <div class = "posts" id = "posts"></div> 
-                <div class= "posts" id="sortedPosts"></div>
-
-                <div class="loadMoreWrapper">
-                    <button id="loadMoreBtn">Load more items</button>
-                </div>
-                
+            <main class="main" id="mainContainer">
+                <div class="posts" id="posts"></div>
+                <div class="posts" id="sortedPosts"></div>
             </main>
         </div>
 
