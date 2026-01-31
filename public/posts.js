@@ -210,6 +210,11 @@ async function main() {
     }
 
     async function sortItemsByHighPriceToLowFunction(sort, container) {
+        console.log(container.querySelectorAll("div").length);
+        console.log(container);
+        if ((container.querySelectorAll("div").length) == 0){
+            container = normalPostContainer;
+        }
         displayVisibleOrHidden(container);
         const posts = Array.from(container.querySelectorAll(".post"));
         posts.sort((a, b) => {
