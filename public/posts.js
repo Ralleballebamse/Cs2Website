@@ -123,8 +123,9 @@ async function main() {
         }
         if (followPriceRange == true) {
             sortOutLowAndHighPrices(heighestPrice, minimunPrice, containers[indexPlayerInv]);
+        } else {
+            displayVisibleOrHidden(containers[indexPlayerInv]);
         }
-        displayVisibleOrHidden(containers[indexPlayerInv]);
     });
 
 
