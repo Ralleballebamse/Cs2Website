@@ -20,6 +20,8 @@ async function main() {
     let followPriceRange = false;
     let lowToHigh = false;
     let highToLow = false;
+    let showSpecifiedPlayerInv = false;
+    let indexPlayerInv = 0;
 
     async function loadInSteamData(steamid) {
         const steamLink = `/steam?steamid=${steamid}`;
@@ -110,16 +112,28 @@ async function main() {
     steamProfileButtonAll.addEventListener("click", (e) => {
         const btn = e.target.closest("button");
         const buttons = steamProfileButtonAll.querySelectorAll("button");
-        const index = Array.from(buttons).indexOf(btn);
+        indexPlayerInv = Array.from(buttons).indexOf(btn);
+        showSpecifiedPlayerInv = true;
 
-        displayVisibleOrHidden(containers[index]);
+        if (highToLow == true) {
+            sortItemsByHighPriceToLowFunction("HighToLow", containers[indexPlayerInv]);
+        }
+        else if (lowToHigh == true) {
+            sortItemsByHighPriceToLowFunction("LowToHigh", containers[indexPlayerInv]);
+        }
+        if (followPriceRange == true) {
+            sortOutLowAndHighPrices(heighestPrice, minimunPrice, containers[indexPlayerInv]);
+        }
+        displayVisibleOrHidden(containers[indexPlayerInv]);
     });
 
 
     const sortItemsByHighPriceToLow = document.getElementById("sortItemsByHighPriceToLowBtn");
     sortItemsByHighPriceToLow.addEventListener("click", () => {
         if (followPriceRange == true) {
-            sortItemsByHighPriceToLowFunction("HighToLow", itemUserDecidePriceContainer)
+            sortItemsByHighPriceToLowFunction("HighToLow", itemUserDecidePriceContainer);
+        } else if (showSpecifiedPlayerInv == true) {
+            sortItemsByHighPriceToLowFunction("HighToLow", containers[indexPlayerInv]);
         } else {
             sortItemsByHighPriceToLowFunction("HighToLow", itemSortContainer);
         }
@@ -129,7 +143,9 @@ async function main() {
     const sortItemsByLowPriceToHigh = document.getElementById("sortItemsByLowPriceToHighBtn");
     sortItemsByLowPriceToHigh.addEventListener("click", () => {
         if (followPriceRange == true) {
-            sortItemsByHighPriceToLowFunction("LowToHigh", itemUserDecidePriceContainer)
+            sortItemsByHighPriceToLowFunction("LowToHigh", itemUserDecidePriceContainer);
+        } else if (showSpecifiedPlayerInv == true) {
+            sortItemsByHighPriceToLowFunction("LowToHigh", containers[indexPlayerInv]);
         } else {
             sortItemsByHighPriceToLowFunction("LowToHigh", itemSortContainer);
         }
@@ -138,6 +154,7 @@ async function main() {
 
     const switchToMain = document.getElementById("switchToMain");
     switchToMain.addEventListener("click", () => {
+        showSpecifiedPlayerInv = false;
         displayVisibleOrHidden(normalPostContainer);
     });
 
@@ -189,10 +206,10 @@ async function main() {
                 container.appendChild(post.cloneNode(true));
             }
         });
-        if (highToLow == true){
+        if (highToLow == true) {
             sortItemsByHighPriceToLowFunction("HighToLow", container)
         }
-        else if (lowToHigh == true){
+        else if (lowToHigh == true) {
             sortItemsByHighPriceToLowFunction("LowToHigh", container)
         }
 
@@ -210,9 +227,7 @@ async function main() {
     }
 
     async function sortItemsByHighPriceToLowFunction(sort, container) {
-        console.log(container.querySelectorAll("div").length);
-        console.log(container);
-        if ((container.querySelectorAll("div").length) == 0){
+        if ((container.querySelectorAll("div").length) == 0) {
             container = normalPostContainer;
         }
         displayVisibleOrHidden(container);
