@@ -168,7 +168,6 @@ async function main() {
 
     const priceHighTextArea = document.getElementById("PriceToPrice");
     priceHighTextArea.addEventListener("keydown", (e) => {
-        console.log("Typing in:", e.target.id);
         const allowed = [
             "Backspace", "Delete", "ArrowLeft", "ArrowRight",
             "ArrowUp", "ArrowDown", "Tab", "Enter"
@@ -182,7 +181,11 @@ async function main() {
     priceHighTextArea.addEventListener("input", () => {
         heighestPrice = priceHighTextArea[0].value;
         minimunPrice = priceHighTextArea[1].value;
-        sortOutLowAndHighPrices(heighestPrice, minimunPrice, itemUserDecidePriceContainer);
+        if (showSpecifiedPlayerInv == true) {
+            sortOutLowAndHighPrices(heighestPrice, minimunPrice, containers[indexPlayerInv]);
+        } else {
+            sortOutLowAndHighPrices(heighestPrice, minimunPrice, normalPostContainer);
+        }
     });
 
     function createItemInspectLink(assetid, steamid, link) {
@@ -195,22 +198,22 @@ async function main() {
         if (highValue == "") {
             highValue = 10000;
         }
-        container.innerHTML = "";
-        const posts = Array.from(normalPostContainer.querySelectorAll(".post"));
+        const posts = Array.from(container.querySelectorAll(".post"));
+        itemUserDecidePriceContainer.innerHTML = "";
         posts.forEach(post => {
             const priceA = parseFloat(
                 post.querySelector("h6").textContent.replace(/[^0-9.]/g, "")
             );
 
             if (priceA >= lowValue && priceA <= highValue) {
-                container.appendChild(post.cloneNode(true));
+                itemUserDecidePriceContainer.appendChild(post.cloneNode(true));
             }
         });
         if (highToLow == true) {
-            sortItemsByHighPriceToLowFunction("HighToLow", container)
+            sortItemsByHighPriceToLowFunction("HighToLow", itemUserDecidePriceContainer)
         }
         else if (lowToHigh == true) {
-            sortItemsByHighPriceToLowFunction("LowToHigh", container)
+            sortItemsByHighPriceToLowFunction("LowToHigh", itemUserDecidePriceContainer)
         }
 
         if (highValue == 10000 && lowValue == "") {
@@ -223,7 +226,7 @@ async function main() {
         } else {
             followPriceRange = true;
         }
-        displayVisibleOrHidden(container);
+        displayVisibleOrHidden(itemUserDecidePriceContainer);
     }
 
     async function sortItemsByHighPriceToLowFunction(sort, container) {
