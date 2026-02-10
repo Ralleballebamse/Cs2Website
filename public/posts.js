@@ -296,7 +296,7 @@ async function main() {
     async function loadMoreItems(invData, steamid, ContainerPerSteamAccount) {
         const descByClass = new Map(invData.descriptions.map(d => [d.classid, d]));
 
-        for (let z = 0; z < invData.assets.length; z++) { //invData.assets.length
+        for (let z = 0; z < 10; z++) { //invData.assets.length
             const asset = invData.assets[z];
             const classid = asset?.classid;
             if (!classid) continue;
@@ -365,8 +365,6 @@ async function main() {
         // Reset visible container
         displayVisibleOrHidden(normalPostContainer);
     }
-
-    watchCurrentMatchId();
 
     async function watchCurrentMatchId() {
         let last = null;
