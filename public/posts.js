@@ -22,6 +22,7 @@ async function main() {
     let highToLow = false;
     let showSpecifiedPlayerInv = false;
     let indexPlayerInv = 0;
+    let hello = [];
 
     async function loadInSteamData(steamid) {
         const steamLink = `/steam?steamid=${steamid}`;
@@ -41,7 +42,6 @@ async function main() {
 
     const itemDB = await res.json();
 
-    let hello = ["76561198992052209", "76561198158780614", "76561198063864524"]
     const steamProfileButtons = [];
 
     async function fetchSteamId(steamid) {
@@ -272,17 +272,17 @@ async function main() {
         lastShown = show;
     }
 
-
     async function runAndStream() {
         console.log("Starting all tasks...\n");
 
-        for (let i = 1; i <= 2; i++) {
-            const taskName = `Task ${i}`;
+        for (let i = 0; i < hello.length; i++) {
+            const steamid = hello[i];
 
             // Start the async work
-            steamdata = await loadInSteamData(hello[i - 1]);
-            ContainerPerSteamAccount = await fetchSteamId(hello[i - 1]);
-            const promise = loadMoreItems(steamdata, hello[i - 1], ContainerPerSteamAccount);
+            steamdata = await loadInSteamData(steamid);
+            ContainerPerSteamAccount = await fetchSteamId(steamid);
+
+            const promise = loadMoreItems(steamdata, steamid, ContainerPerSteamAccount);
 
             // Attach a handler for WHEN it finishes
             promise.then(result => {
@@ -292,21 +292,11 @@ async function main() {
 
         console.log("\nAll tasks have been started (but not finished yet)");
     }
-    await runAndStream();
-
-
-
-
-
-
-
-
-
 
     async function loadMoreItems(invData, steamid, ContainerPerSteamAccount) {
         const descByClass = new Map(invData.descriptions.map(d => [d.classid, d]));
 
-        for (let z = 0; z < 110; z++) { //invData.assets.length
+        for (let z = 0; z < invData.assets.length; z++) { //invData.assets.length
             const asset = invData.assets[z];
             const classid = asset?.classid;
             if (!classid) continue;
@@ -353,6 +343,58 @@ async function main() {
 
         mainContainer.append(ContainerPerSteamAccount);
     }
+
+    function resetForNewMatch() {
+        // Clear UI containers
+        const profileContainer = document.getElementById("multipleProfileButtons");
+        profileContainer.innerHTML = "";
+
+        normalPostContainer.innerHTML = "";
+        itemSortContainer.innerHTML = "";
+        itemUserDecidePriceContainer.innerHTML = "";
+
+        // Clear arrays/state
+        containers.length = 0;
+        arrayAssets = [];
+        showSpecifiedPlayerInv = false;
+        indexPlayerInv = 0;
+        followPriceRange = false;
+        highToLow = false;
+        lowToHigh = false;
+
+        // Reset visible container
+        displayVisibleOrHidden(normalPostContainer);
+    }
+
+    watchCurrentMatchId();
+
+    async function watchCurrentMatchId() {
+        let last = null;
+
+        while (true) {
+            try {
+                const r = await fetch("/api/faceit/current-matchid");
+                const { matchId } = await r.json();
+
+                if (matchId && matchId !== last) {
+                    last = matchId;
+
+                    const data = await (await fetch(`/api/faceit/match-steamids?matchId=${encodeURIComponent(matchId)}`)).json();
+                    hello = data.steamIds || [];
+
+                    resetForNewMatch();
+                    await runAndStream();
+                }
+            } catch (err) {
+                console.error("watchCurrentMatchId error:", err);
+            }
+
+            await sleep(2000);
+        }
+    }
+
+    watchCurrentMatchId();
+
 }
 
 main();
