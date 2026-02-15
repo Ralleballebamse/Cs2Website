@@ -3,6 +3,7 @@ export function initHtmlButtons(deps) {
         steamProfileButtonAll,
         sortItemsByHighPriceToLow,
         sortItemsByLowPriceToHigh,
+        searchForSkins,
         switchToMain,
         priceHighTextArea,
         containers,
