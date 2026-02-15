@@ -1,5 +1,3 @@
-// htmlButtons.js
-
 export function initHtmlButtons(deps) {
     const {
         steamProfileButtonAll,
@@ -23,46 +21,24 @@ export function initHtmlButtons(deps) {
         state.indexPlayerInv = Array.from(buttons).indexOf(btn);
         state.showSpecifiedPlayerInv = true;
 
-        if (state.highToLow) {
-            sortItemsByHighPriceToLowFunction("highToLow", containers[state.indexPlayerInv]);
-        } else if (state.lowToHigh) {
-            sortItemsByHighPriceToLowFunction("lowToHigh", containers[state.indexPlayerInv]);
-        }
-
-        if (state.followPriceRange) {
-            sortOutLowAndHighPrices(
-                state.heighestPrice,
-                state.minimunPrice,
-                containers[state.indexPlayerInv]
-            );
-        } else {
-            displayVisibleOrHidden(containers[state.indexPlayerInv]);
-        }
+        checkActiveFunctions();
     });
 
     sortItemsByHighPriceToLow.addEventListener("click", () => {
-        if (state.followPriceRange) {
-            sortItemsByHighPriceToLowFunction("highToLow", itemUserDecidePriceContainer);
-        } else if (state.showSpecifiedPlayerInv) {
-            sortItemsByHighPriceToLowFunction("highToLow", containers[state.indexPlayerInv]);
-        } else {
-            sortItemsByHighPriceToLowFunction("highToLow", normalPostContainer);
-        }
+        state.highToLow = true;
+        state.lowToHigh = false;
+        checkActiveFunctions();
     });
 
     sortItemsByLowPriceToHigh.addEventListener("click", () => {
-        if (state.followPriceRange) {
-            sortItemsByHighPriceToLowFunction("lowToHigh", itemUserDecidePriceContainer);
-        } else if (state.showSpecifiedPlayerInv) {
-            sortItemsByHighPriceToLowFunction("lowToHigh", containers[state.indexPlayerInv]);
-        } else {
-            sortItemsByHighPriceToLowFunction("lowToHigh", normalPostContainer);
-        }
+        state.lowToHigh = true;
+        state.highToLow = false;
+        checkActiveFunctions();
     });
 
     switchToMain.addEventListener("click", () => {
         state.showSpecifiedPlayerInv = false;
-        displayVisibleOrHidden(normalPostContainer);
+        checkActiveFunctions();
     });
 
     priceHighTextArea.addEventListener("keydown", (e) => {
@@ -80,18 +56,57 @@ export function initHtmlButtons(deps) {
         state.heighestPrice = priceHighTextArea[0].value;
         state.minimunPrice = priceHighTextArea[1].value;
 
-        if (state.showSpecifiedPlayerInv) {
-            sortOutLowAndHighPrices(
-                state.heighestPrice,
-                state.minimunPrice,
-                containers[state.indexPlayerInv]
-            );
-        } else {
-            sortOutLowAndHighPrices(
-                state.heighestPrice,
-                state.minimunPrice,
-                normalPostContainer
-            );
+        const high = state.heighestPrice;
+        const low = state.minimunPrice;
+        state.followPriceRange = !(high === "" && low === "");
+
+        checkActiveFunctions();
+    });
+
+    searchForSkins.addEventListener("keydown", (e) => {
+        const allowed = [
+            "Backspace", "Delete", "ArrowLeft", "ArrowRight",
+            "ArrowUp", "ArrowDown", "Tab", "Enter"
+        ];
+
+        if (!/^[a-zA-Z0-9 ]$/.test(e.key) && !allowed.includes(e.key)) {
+            e.preventDefault();
         }
     });
+
+    searchForSkins.addEventListener("input", () => {
+        state.searchItemName = searchForSkins.value;
+        checkActiveFunctions();
+    });
+
+    function checkActiveFunctions() {
+        // 1) Choose container
+        const baseContainer =
+            state.showSpecifiedPlayerInv && containers[state.indexPlayerInv]
+                ? containers[state.indexPlayerInv]
+                : normalPostContainer;
+
+        // 2) Apply price filter
+        let activeContainer = baseContainer;
+
+        if (state.followPriceRange) {
+            sortOutLowAndHighPrices(state.heighestPrice, state.minimunPrice, baseContainer);
+            activeContainer = itemUserDecidePriceContainer;
+        }
+
+        // 3) Apply search
+        searchItemsByName(state.searchItemName || "", activeContainer, state.searchItem);
+
+        // 4) Apply sort
+        if (state.highToLow) {
+            sortItemsByHighPriceToLowFunction("highToLow", activeContainer);
+        } else if (state.lowToHigh) {
+            sortItemsByHighPriceToLowFunction("lowToHigh", activeContainer);
+        }
+
+        // 5) Final container
+        displayVisibleOrHidden(activeContainer);
+
+        state.lastShown = activeContainer;
+    }
 }

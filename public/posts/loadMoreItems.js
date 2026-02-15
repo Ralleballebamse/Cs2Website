@@ -39,7 +39,7 @@ export async function loadMoreItems(invData, containerPerSteamAccount, deps) {
 		post.classList.add("post");
 
 		const itemName = document.createElement("h4");
-		itemName.textContent = desc.name;
+		itemName.textContent = desc.name.replace(" | ", " ");
 
 		const itemImage = document.createElement("img");
 		itemImage.src = `https://community.cloudflare.steamstatic.com/economy/image/${desc.icon_url ?? ""}`;

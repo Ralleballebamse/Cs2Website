@@ -1,5 +1,3 @@
-// sorting.js
-
 export function initSorting(deps) {
     const {
         state,
@@ -68,8 +66,21 @@ export function initSorting(deps) {
         posts.forEach(post => container.appendChild(post.cloneNode(true)));
     }
 
+
+    function searchItemsByName(query, container, searchingAfterName) {
+        const value = (query || "").toLowerCase();
+        const posts = Array.from(container.querySelectorAll(".post"));
+
+        posts.forEach(post => {
+            const title = (post.querySelector("h4")?.textContent || "").toLowerCase();
+            post.style.display = title.startsWith(value) ? "" : "none";
+        });
+    }
+
+
     return {
         sortOutLowAndHighPrices,
-        sortItemsByHighPriceToLowFunction
+        sortItemsByHighPriceToLowFunction,
+        searchItemsByName,
     };
 }

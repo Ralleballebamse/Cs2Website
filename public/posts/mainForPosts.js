@@ -20,7 +20,6 @@ async function main() {
     //Declared globally variables
     const sleep = (ms) => new Promise((r) => setTimeout(r, ms)); // This is for making an await sleep
     const arrayAssets = []; // Array for avoiding dublications of items
-    let lastShown = null;
     let steamIds = [];
 
     const state = {
@@ -30,7 +29,10 @@ async function main() {
         lowToHigh: false,
         highToLow: false,
         showSpecifiedPlayerInv: false,
-        indexPlayerInv: 0
+        indexPlayerInv: 0,
+        searchItem: false,
+        searchItemName: "",
+        lastShown: null
     };
 
 
@@ -43,13 +45,14 @@ async function main() {
     const itemSortContainer = document.getElementById("sortedPosts");
     const itemUserDecidePriceContainer = document.getElementById("sortedPosts");
 
-    lastShown = normalPostContainer;
+    state.lastShown = normalPostContainer;
 
     //ElementbyIds
     const sortItemsByHighPriceToLow = document.getElementById("sortItemsByHighPriceToLowBtn");
     const sortItemsByLowPriceToHigh = document.getElementById("sortItemsByLowPriceToHighBtn");
     const switchToMain = document.getElementById("switchToMain");
     const priceHighTextArea = document.getElementById("PriceToPrice");
+    const searchForSkins = document.getElementById("SearchForSkinsTextArea");
 
     //Fetches
     const res = await fetch(
@@ -71,7 +74,7 @@ async function main() {
     });
 
 
-    const { sortOutLowAndHighPrices, sortItemsByHighPriceToLowFunction } = initSorting({
+    const { sortOutLowAndHighPrices, sortItemsByHighPriceToLowFunction, searchItemsByName } = initSorting({
         state,
         normalPostContainer,
         itemUserDecidePriceContainer,
@@ -83,6 +86,7 @@ async function main() {
         steamProfileButtonAll,
         sortItemsByHighPriceToLow,
         sortItemsByLowPriceToHigh,
+        searchForSkins,
         switchToMain,
         priceHighTextArea,
         containers,
@@ -91,6 +95,7 @@ async function main() {
         sortItemsByHighPriceToLowFunction,
         sortOutLowAndHighPrices,
         displayVisibleOrHidden,
+        searchItemsByName,
         state
     });
 
@@ -98,12 +103,12 @@ async function main() {
     function displayVisibleOrHidden(show) {
         if (!show) return;
 
-        if (lastShown && lastShown !== show) {
-            lastShown.style.display = "none";
+        if (state.lastShown && state.lastShown !== show) {
+            state.lastShown.style.display = "none";
         }
 
         show.style.display = "grid";
-        lastShown = show;
+        state.lastShown = show;
     }
 
 
