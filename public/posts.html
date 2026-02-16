@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="A better twitter">
     <link rel="canonical" href="/index.html">
-    <link rel="stylesheet" href="posts.css">
+    <link rel="stylesheet" href="/posts/posts.css">
     <link rel="shortcut icon" href="/favicon.ico">
-    <script src="./posts.js" defer></script>
+    <script type="module" src="/posts/mainForPosts.js"></script>
     <title>ShadowNet</title>
 </head>
 
@@ -38,11 +38,17 @@
                 <form id="PriceToPrice" novalidate>
                     <div class="field">
                         <label for="PriceHigh">High</label>
-                        <textarea name="PriceHigh" id="PriceHigh" rows="1" maxlength="10"></textarea>
+                        <textarea name="PriceHigh" id="PriceHigh" rows="1" maxlength="5"></textarea>
                     </div>
                     <div class="field">
                         <label for="PriceLow">Low</label>
-                        <textarea name="PriceLow" id="PriceLow" rows="1" maxlength="10"></textarea>
+                        <textarea name="PriceLow" id="PriceLow" rows="1" maxlength="5"></textarea>
+                    </div>
+                </form>
+                <form id="SearchForSkins" novalidate>
+                    <div class="field">
+                        <label for="SearchForSkinsLabel">SearchForSkins</label>
+                        <textarea name="SearchForSkins" id="SearchForSkinsTextArea" rows="1" maxlength="20"></textarea>
                     </div>
                 </form>
                 <div class="multipleProfileButtons" id="multipleProfileButtons">
