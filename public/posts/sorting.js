@@ -72,7 +72,14 @@ export function initSorting(deps) {
         const posts = Array.from(container.querySelectorAll(".post"));
 
         posts.forEach(post => {
-            const title = (post.querySelector("h4")?.textContent || "").toLowerCase();
+            let title = (post.querySelector("h4")?.textContent || "").toLowerCase();
+
+            if (title.startsWith("stattrak™")){
+                title = title.replace("stattrak™ ", "");
+            } else if (title.startsWith("souvenir")){
+                title = title.replace("souvenir ", "");
+            }
+            
             post.style.display = title.startsWith(value) ? "" : "none";
         });
     }

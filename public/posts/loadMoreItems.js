@@ -12,7 +12,14 @@ export async function loadMoreItems(invData, containerPerSteamAccount, deps) {
 			.replace("%assetid%", assetid);
 	}
 
-	const descByClass = new Map(invData.descriptions.map(d => [d.classid, d]));
+	const descByClass = new Map(
+		invData.descriptions.map(d => [d.classid, d])
+	);
+	const propsByAssetId = new Map(
+		invData.asset_properties.map(ap => [ap.assetid, ap.asset_properties])
+	);
+
+	console.log(invData);
 
 	for (let z = 0; z < 5; z++) { // invData.assets.length
 		const asset = invData.assets[z];
@@ -39,7 +46,20 @@ export async function loadMoreItems(invData, containerPerSteamAccount, deps) {
 		post.classList.add("post");
 
 		const itemName = document.createElement("h4");
-		itemName.textContent = desc.name.replace(" | ", " ");
+		let nameContains = desc.name
+			.replace("★ ", "")
+			.replace(" | ", " ");
+
+		itemName.textContent = nameContains;
+
+		const itemWear = document.createElement("h5");
+		itemWear.textContent = desc.market_name.split("(")[1]?.replace(")", "") || "Unknown";
+
+		const itemFloat = document.createElement("h5");
+		const props = propsByAssetId.get(asset.assetid);
+		const floatValue = props?.find(p => p.name === "Wear Rating")?.float_value;
+
+		itemFloat.textContent = floatValue ?? "";
 
 		const itemImage = document.createElement("img");
 		itemImage.src = `https://community.cloudflare.steamstatic.com/economy/image/${desc.icon_url ?? ""}`;
@@ -52,7 +72,7 @@ export async function loadMoreItems(invData, containerPerSteamAccount, deps) {
 			itemPrice.textContent = "Market value : $0.01";
 		}
 
-		post.append(itemName, itemImage, itemPrice);
+		post.append(itemName, itemWear, itemFloat, itemImage, itemPrice);
 
 		normalPostContainer.append(post);
 		containerPerSteamAccount.append(post.cloneNode(true));

@@ -10,6 +10,7 @@ export function initHtmlButtons(deps) {
         normalPostContainer,
         itemUserDecidePriceContainer,
         sortItemsByHighPriceToLowFunction,
+        searchItemsByName,
         sortOutLowAndHighPrices,
         displayVisibleOrHidden,
         state
