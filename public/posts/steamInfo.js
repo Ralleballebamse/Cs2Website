@@ -3,8 +3,7 @@ export function initSteamInfo(deps) {
         sleep,
         loadfiles,
         containers,
-        mainContainer,
-        itemDB
+        mainContainer
     } = deps;
 
     async function loadInSteamData(steamid) {
@@ -43,35 +42,17 @@ export function initSteamInfo(deps) {
 
     async function fetchData(marketName, currency) {
         const currencyId = currency === "€" ? 3 : 1;
-
-        const response = await fetch(
-            `/api/steam?item_nameid=${itemDB[marketName]}&currency=${currencyId}`
-        );
-
-        const test = await response.json();
+        await sleep(100000);
 
         try {
-            if (currency === "€") {
-                let price = test.sell_order_table.split("€")[0].split(">");
-                return price[price.length - 1] + currency;
-            } else {
-                return currency + test.sell_order_table.split("$")[1].split("<")[0];
-            }
-        } catch (err) {
-            for (let z = 0; z < 5; z++) {
-                await sleep(z * 1000);
-                try {
-                    const res = await fetch(
-                        `/api/steam/lowest?name=${encodeURIComponent(marketName)}&currency=${currencyId}`
-                    );
-                    return (await res.text()).trim();
-                } catch {
-                    // retry
-                }
-            }
+            const res = await fetch(
+                `/api/steam/lowest?name=${encodeURIComponent(marketName)}&currency=${currencyId}`
+            );
+            return (await res.text()).trim();
+        } catch {
         }
 
-        // fallback
+
         return currency === "€" ? "0.01€" : "$0.01";
     }
 

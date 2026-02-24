@@ -1,0 +1,20 @@
+{
+    "sqltools.connections": [
+        {
+            "mysqlOptions": {
+                "authProtocol": "default",
+                "enableSsl": "Disabled"
+            },
+            "ssh": "Disabled",
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 3306,
+            "driver": "MySQL",
+            "name": "CS2 Local",
+            "group": "127.0.0.1",
+            "database": "cs2_website",
+            "username": "cs2dev",
+            "password": "cs2dev123"
+        }
+    ]
+}
