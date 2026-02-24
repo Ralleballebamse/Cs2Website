@@ -12,7 +12,7 @@ export async function loadMoreItems(invData, containerPerSteamAccount, deps) {
 
 	const oneWeek = 7 * 24 * 60 * 60 * 1000;
 
-	for (let z = 0; z < 5; z++) {
+	for (let z = 0; z < 5; z++) { //invData.assets.length
 		const asset = invData.assets[z];
 		const classid = asset?.classid;
 		if (!classid) continue;
