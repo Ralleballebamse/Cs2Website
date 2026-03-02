@@ -18,4 +18,7 @@ app.use(steamProfileRoutes);
 app.use("/api/faceit", faceit);
 app.use("/api/mysql", mySQLrouter);
 
-app.listen(3000, () => console.log("Backend running on http://localhost:3000"));
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, "0.0.0.0", () => {
+    console.log(`Backend running on http://0.0.0.0:${PORT}`);
+});
