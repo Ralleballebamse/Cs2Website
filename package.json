@@ -2,6 +2,7 @@
   "name": "my_cs2_website",
   "version": "1.0.0",
   "main": "contact.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
@@ -12,6 +13,7 @@
   "description": "",
   "dependencies": {
     "dotenv": "^17.2.4",
-    "express": "^5.2.1"
+    "express": "^5.2.1",
+    "mysql2": "^3.18.0"
   }
 }
