@@ -10,9 +10,9 @@ export async function loadMoreItems(invData, containerPerSteamAccount, deps) {
 		invData.asset_properties.map((ap) => [ap.assetid, ap.asset_properties])
 	);
 
-	const oneWeek = 7 * 24 * 60 * 60 * 1000;
+	const twoWeek = 14 * 24 * 60 * 60 * 1000;
 
-	for (let z = 0; z < 5; z++) { //invData.assets.length
+	for (let z = 0; z < invData.assets.length; z++) { //invData.assets.length
 		const asset = invData.assets[z];
 		const classid = asset?.classid;
 		if (!classid) continue;
@@ -103,10 +103,10 @@ export async function loadMoreItems(invData, containerPerSteamAccount, deps) {
 
 		const hasDbPrice = dbRow && dbRow.price != null && dbRow.updated_at != null;
 		const isOld =
-			hasDbPrice && nowMs - new Date(dbRow.updated_at).getTime() > oneWeek;
+			hasDbPrice && nowMs - new Date(dbRow.updated_at).getTime() > twoWeek;
 
 		// Use DB or fetch new
-		if (!hasDbPrice || isOld) {
+		if (!hasDbPrice || isOld || Number(dbRow.price) === 0) {
 			let itemPriceFetch;
 			try {
 				itemPriceFetch = await fetchData(desc.market_hash_name, "$");
