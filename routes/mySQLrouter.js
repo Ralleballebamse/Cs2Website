@@ -1,5 +1,8 @@
 import express from "express";
 import mysql from "mysql2/promise";
+import bcrypt from "bcrypt";
+
+const saltRounds = 10;
 
 const router = express.Router();
 
@@ -63,7 +66,9 @@ router.post("/price/set", async (req, res) => {
 
 router.post("/users/set", async (req, res) => {
     try {
-        const { username, password_hash, steam_url } = req.body;
+        const { username, password, steam_url } = req.body;
+        
+        const password_hash = await hashPassword(password);
 
         await pool.execute(
             `INSERT INTO users (username, password_hash, steam_url)
@@ -85,21 +90,39 @@ router.post("/users/set", async (req, res) => {
 
 router.post("/users/get", async (req, res) => {
     try {
-        const { username, password_hash} = req.body;
+        const { username, password } = req.body;
 
         const [rows] = await pool.execute(
-            `SELECT username, steam_url
+            `SELECT username, password_hash, steam_url
             FROM users
-            WHERE username = ?
-            AND password_hash = ?`,
-            [username, password_hash]
+            WHERE username = ?`,
+            [username]
         );
 
-        res.json(rows[0] || null);
+        const storedHash = rows[0].password_hash;
+
+        const checkedPassword = await checkPassword(password, storedHash)
+
+        res.json(checkedPassword);
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: "DB error" });
     }
 });
+
+async function hashPassword(password) {
+    const hash = await bcrypt.hash(password, saltRounds);
+    return hash;
+}
+
+async function checkPassword(enteredPassword, storedHash) {
+    const match = await bcrypt.compare(enteredPassword, storedHash);
+
+    if (match) {
+        return true;
+    } else {
+        return false;
+    }
+}
 
 export default router;

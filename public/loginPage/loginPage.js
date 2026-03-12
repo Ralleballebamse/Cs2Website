@@ -84,7 +84,7 @@ async function main() {
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
                         username: userUsername,
-                        password_hash: userPassword,
+                        password: userPassword,
                         steam_url: userSteamUrl
                     })
                 });
@@ -123,13 +123,14 @@ async function main() {
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({
                             username: userUsername,
-                            password_hash: userPassword
+                            password: userPassword
                         }),
                     });
                     dbRow = await res.json();
                 } catch {
                 }
             }
+            console.log(dbRow);
             if (dbRow) {
                 incorrectLogin.style.display = "none";
             } else {
