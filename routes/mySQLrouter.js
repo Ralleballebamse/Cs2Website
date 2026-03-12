@@ -105,8 +105,7 @@ router.post("/users/get", async (req, res) => {
 
         res.json(checkedPassword);
     } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: "DB error" });
+        res.json(false);
     }
 });
 

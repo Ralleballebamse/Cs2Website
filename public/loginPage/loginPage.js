@@ -48,6 +48,11 @@ async function main() {
     mainContainer.append(incorrectLogin);
     incorrectLogin.style.display = "none";
 
+    const correctLogin = document.createElement("h4");
+    correctLogin.textContent = "Login successful!";
+    mainContainer.append(correctLogin);
+    correctLogin.style.display = "none";
+
 
     createButton.addEventListener("click", async () => {
         loginUserActive = false;
@@ -99,6 +104,7 @@ async function main() {
                 }
             }
         }
+        correctLogin.style.display = "none";
         incorrectLogin.style.display = "none";
         steamUrlfield.style.display = "flex";
         createUserActive = true;
@@ -132,11 +138,14 @@ async function main() {
             }
             console.log(dbRow);
             if (dbRow) {
+                correctLogin.style.display = "flex";
                 incorrectLogin.style.display = "none";
             } else {
+                correctLogin.style.display = "none";
                 incorrectLogin.style.display = "flex";
             }
         }
+        usernameExistsText.style.display = "none";
         noUsernameText.style.display = "none";
         noPasswordText.style.display = "none";
         noSteamUrlText.style.display = "none";
