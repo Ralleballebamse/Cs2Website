@@ -2,10 +2,11 @@
 async function main() {
 
     //Variables
-    let count = 0;
     let createUserUsername = true;
     let createUserPassword = true;
     let createUserSteamUrl = true;
+    let loginUserActive = true;
+    let createUserActive = false;
 
     //Buttons
     const createButton = document.getElementById("CreateUser");
@@ -49,8 +50,8 @@ async function main() {
 
 
     createButton.addEventListener("click", async () => {
-        count++;
-        if (count > 1) {
+        loginUserActive = false;
+        if (createUserActive) {
             //Attemt to create user
             const userUsername = usernameTextArea.value;
             const userPassword = passwordTextArea.value;
@@ -98,18 +99,16 @@ async function main() {
                 }
             }
         }
+        incorrectLogin.style.display = "none";
         steamUrlfield.style.display = "flex";
+        createUserActive = true;
     });
 
     const loginButton = document.getElementById("LoginUser");
     loginButton.addEventListener("click", async () => {
-        count++;
-        if (count >= 1) {
+        createUserActive = false;
+        if (loginUserActive) {
             //Attempt to login user
-            noUsernameText.style.display = "none";
-            noPasswordText.style.display = "none";
-            noSteamUrlText.style.display = "none";
-            steamUrlfield.style.display = "none";
 
             const userUsername = usernameTextArea.value;
             const userPassword = passwordTextArea.value;
@@ -137,6 +136,11 @@ async function main() {
                 incorrectLogin.style.display = "flex";
             }
         }
+        noUsernameText.style.display = "none";
+        noPasswordText.style.display = "none";
+        noSteamUrlText.style.display = "none";
+        steamUrlfield.style.display = "none";
+        loginUserActive = true;
     });
 }
 
