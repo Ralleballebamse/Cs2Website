@@ -61,4 +61,45 @@ router.post("/price/set", async (req, res) => {
     }
 });
 
+router.post("/users/set", async (req, res) => {
+    try {
+        const { username, password_hash, steam_url } = req.body;
+
+        await pool.execute(
+            `INSERT INTO users (username, password_hash, steam_url)
+            VALUES (?, ?, ?)`,
+            [username, password_hash, steam_url]
+        );
+
+        res.json({ ok: true, created: true });
+    } catch (err) {
+
+        if (err.code === "ER_DUP_ENTRY") {
+            return res.json({ ok: false, reason: "username_exists" });
+        }
+
+        console.error(err);
+        res.status(500).json({ error: "DB error" });
+    }
+});
+
+router.post("/users/get", async (req, res) => {
+    try {
+        const { username, password_hash} = req.body;
+
+        const [rows] = await pool.execute(
+            `SELECT username, steam_url
+            FROM users
+            WHERE username = ?
+            AND password_hash = ?`,
+            [username, password_hash]
+        );
+
+        res.json(rows[0] || null);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "DB error" });
+    }
+});
+
 export default router;

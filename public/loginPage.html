@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A better twitter">
+    <link rel="canonical" href="/index.html">
+    <link rel="stylesheet" href="/loginPage/loginPage.css">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <script type="module" src="/loginPage/loginPage.js"></script>
+    <title>ShadowNet</title>
+</head>
+
+<body>
+    <div class="container">
+
+        <header class="header">
+            <nav class="nav-list">
+                <h1>ShadowNet</h1>
+                <ul>
+                    <li><a id="active" href="home.html">Home</a></li>
+                    <li><a href="posts.html">Posts</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </nav>
+        </header>
+
+
+        <main class="main" id = "main">
+            <h2>LoginPage</h2>
+            <div class="field" id = "UsernameField">
+                <label for="Username">Username</label>
+                <textarea name="Username" id="UsernameTextArea" rows="1" maxlength="20"></textarea>
+            </div>
+            <div class="field" id = "PasswordField">
+                <label for="Password">Password</label>
+                <textarea name="Password" id="PasswordTextArea" rows="1" maxlength="20"></textarea>
+            </div>
+            <div class="field" id = "SteamUrlField">
+                <label for="SteamUrl">SteamUrl</label>
+                <textarea name="SteamUrl" id="SteamUrlTextArea" rows="1" maxlength="40"></textarea>
+            </div>
+            <button id="LoginUser">Login</button>
+            <button id="CreateUser">Create</button>
+        </main>
+
+
+        <footer class="footer" id="contact">
+            <div class="leftfooter">
+                <p>&copy; 2025 Rasmus Rolin</p>
+            </div>
+
+            <div class="rightfooter">
+                <h2>Contact Details</h2>
+                <address>
+                    <p>Phone: <a href="tel:123456789">123-456-789</a></p>
+                    <p>Email: <a href="mailto:Test@gmail.com">Test@gmail.com</a></p>
+                    <p>Address: Näsbychaussén 48A</p>
+                    <p>Open hours: 07-16</p>
+                </address>
+            </div>
+        </footer>
+    </div>
+
+</body>
