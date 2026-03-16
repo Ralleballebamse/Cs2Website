@@ -54,23 +54,16 @@ async function main() {
     const priceHighTextArea = document.getElementById("PriceToPrice");
     const searchForSkins = document.getElementById("SearchForSkinsTextArea");
 
-    //Fetches
-    const res = await fetch(
-        "https://raw.githubusercontent.com/somespecialone/steam-item-name-ids/refs/heads/master/data/cs2.json",
-    );
-    const itemDB = await res.json();
-
     //Css changes
     itemSortContainer.style.display = "none";
     itemUserDecidePriceContainer.style.display = "none";
 
 
-    const { loadInSteamData, fetchSteamId, fetchData } = initSteamInfo({
+    const { loadInSteamData, fetchSteamId, fetchweaponNameId, fetchPrice } = initSteamInfo({
         sleep,
         loadfiles,
         containers,
-        mainContainer,
-        itemDB,
+        mainContainer
     });
 
 
@@ -160,7 +153,8 @@ async function main() {
                 arrayAssets,
                 normalPostContainer,
                 mainContainer,
-                fetchData,
+                fetchweaponNameId,
+                fetchPrice
             });
 
             // Attach a handler for WHEN it finishes
@@ -170,6 +164,33 @@ async function main() {
         }
         console.log("\nAll tasks have been started (but not finished yet)");
     }
+
+    const dropdown = document.getElementById("sortDropdown");
+    const mainBtn = dropdown.querySelector(".dropbtn");
+    const label = dropdown.querySelector(".label");
+    const options = dropdown.querySelectorAll(".dropdown-content button");
+
+    // toggle open/close
+    mainBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        dropdown.classList.toggle("open");
+    });
+
+    // when picking an option, rename the main button + close
+    options.forEach(btn => {
+        btn.addEventListener("click", () => {
+            label.textContent = btn.textContent;
+            dropdown.classList.remove("open");
+        });
+    });
+
+    // click outside closes
+    document.addEventListener("click", () => dropdown.classList.remove("open"));
+
+    // esc closes
+    document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") dropdown.classList.remove("open");
+    });
 }
 
 main();

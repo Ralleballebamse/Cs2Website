@@ -9,7 +9,6 @@ export function initSteamInfo(deps) {
     async function loadInSteamData(steamid) {
         const steamLink = `/steam?steamid=${steamid}`;
 
-        await sleep(500);
         const steamInventoryData = await loadfiles(steamLink);
         return steamInventoryData;
     }
@@ -40,25 +39,35 @@ export function initSteamInfo(deps) {
         return containerPerSteamAccount;
     }
 
-    async function fetchData(marketName, currency) {
-        const currencyId = currency === "€" ? 3 : 1;
+    async function fetchweaponNameId(itemName) {
         await sleep(100000);
+        const response = await fetch(`/api/steam/market/id?itemName=${encodeURIComponent(itemName)}`);
 
-        try {
-            const res = await fetch(
-                `/api/steam/lowest?name=${encodeURIComponent(marketName)}&currency=${currencyId}`
-            );
-            return (await res.text()).trim();
-        } catch {
+        if (!response.ok) {
+            throw new Error("Failed to fetch marketID from backend");
         }
 
+        const data = await response.json();
+        return data.marketID;
+    }
 
-        return currency === "€" ? "0.01€" : "$0.01";
+    async function fetchPrice(marketID, currency) {
+        const response = await fetch(
+            `/api/steam/market/price?marketID=${encodeURIComponent(marketID)}&currency=${encodeURIComponent(currency)}`
+        );
+
+        if (!response.ok) {
+            throw new Error("Failed to fetch price from backend");
+        }
+
+        const data = await response.json();
+        return data.price;
     }
 
     return {
         loadInSteamData,
         fetchSteamId,
-        fetchData,
+        fetchweaponNameId,
+        fetchPrice,
     };
 }

@@ -138,12 +138,16 @@ async function main() {
             }
             console.log(dbRow);
             if (dbRow) {
+                localStorage.setItem("steamUrl", dbRow.steam_url); // Not steam_url, steamid
+                localStorage.setItem("username", dbRow.username);
+
                 correctLogin.style.display = "flex";
                 incorrectLogin.style.display = "none";
             } else {
                 correctLogin.style.display = "none";
                 incorrectLogin.style.display = "flex";
             }
+            console.log(localStorage.getItem("steamUrl"))
         }
         usernameExistsText.style.display = "none";
         noUsernameText.style.display = "none";

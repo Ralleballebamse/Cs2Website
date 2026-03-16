@@ -17,6 +17,7 @@
         <header class="header">
             <nav class="nav-list">
                 <h1>ShadowNet</h1>
+                <li><a href="loginPage.html">Login</a></li>
                 <ul>
                     <li><a href="home.html">Home</a></li>
                     <li><a id="active" href="posts.html">Posts</a></li>
@@ -27,14 +28,13 @@
 
 
         <div class="main-wrap">
-            <aside class="sidebar" id="sidebar">Left Stuff
-                <h2>Sidebar</h2>
-
-                <div class="loadMoreWrapper" id="loadMoreWrapper">
-                    <button id="sortItemsByHighPriceToLowBtn">Sort high to low</button>
-                    <button id="sortItemsByLowPriceToHighBtn">Sort low to high</button>
-                    <button id="switchToMain">Change back to main page</button>
-                </div>
+            <aside class="sidebar" id="sidebar">
+                <form id="SearchForSkins" novalidate>
+                    <div class="field">
+                        <label for="SearchForSkinsLabel">SearchForSkins</label>
+                        <textarea name="SearchForSkins" id="SearchForSkinsTextArea" rows="1" maxlength="20"></textarea>
+                    </div>
+                </form>
                 <form id="PriceToPrice" novalidate>
                     <div class="field">
                         <label for="PriceHigh">High</label>
@@ -45,19 +45,24 @@
                         <textarea name="PriceLow" id="PriceLow" rows="1" maxlength="5"></textarea>
                     </div>
                 </form>
-                <form id="SearchForSkins" novalidate>
-                    <div class="field">
-                        <label for="SearchForSkinsLabel">SearchForSkins</label>
-                        <textarea name="SearchForSkins" id="SearchForSkinsTextArea" rows="1" maxlength="20"></textarea>
-                    </div>
-                </form>
                 <div class="multipleProfileButtons" id="multipleProfileButtons">
                     <!-- Here is where all steam names and profile pictures adds -->
                 </div>
-
             </aside>
 
             <main class="main" id="mainContainer">
+                <div class="dropdown" id="sortDropdown">
+                    <button class="dropbtn" type="button">
+                        <span class="label">Main Menu</span>
+                        <span class="chev"></span>
+                    </button>
+
+                    <div class="dropdown-content">
+                        <button id="sortItemsByHighPriceToLowBtn">Highest Price</button>
+                        <button id="sortItemsByLowPriceToHighBtn">Lowest Price</button>
+                        <button id="switchToMain">Main Menu</button>
+                    </div>
+                </div>
                 <div class="posts" id="posts"></div>
                 <div class="posts" id="sortedPosts"></div>
             </main>

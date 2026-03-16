@@ -1,5 +1,5 @@
 export async function loadMoreItems(invData, containerPerSteamAccount, deps) {
-	const { arrayAssets, normalPostContainer, mainContainer, fetchData } = deps;
+	const { arrayAssets, normalPostContainer, mainContainer, fetchweaponNameId, fetchPrice } = deps;
 
 	function createItemInspectLink(assetid, steamid, link) {
 		return link.replace("%owner_steamid%", steamid).replace("%assetid%", assetid);
@@ -9,8 +9,6 @@ export async function loadMoreItems(invData, containerPerSteamAccount, deps) {
 	const propsByAssetId = new Map(
 		invData.asset_properties.map((ap) => [ap.assetid, ap.asset_properties])
 	);
-
-	const twoWeek = 14 * 24 * 60 * 60 * 1000;
 
 	for (let z = 0; z < invData.assets.length; z++) { //invData.assets.length
 		const asset = invData.assets[z];
@@ -80,7 +78,7 @@ export async function loadMoreItems(invData, containerPerSteamAccount, deps) {
 
 		// --- price ---
 		const itemPrice = document.createElement("h6");
-		const nowMs = Date.now();
+		let marketID;
 
 		// DB price/date
 		let dbRow = null;
@@ -101,21 +99,16 @@ export async function loadMoreItems(invData, containerPerSteamAccount, deps) {
 			dbRow = null;
 		}
 
-		const hasDbPrice = dbRow && dbRow.price != null && dbRow.updated_at != null;
-		const isOld =
-			hasDbPrice && nowMs - new Date(dbRow.updated_at).getTime() > twoWeek;
+		marketID = dbRow?.marketID ?? null;
 
-		// Use DB or fetch new
-		if (!hasDbPrice || isOld || Number(dbRow.price) === 0) {
-			let itemPriceFetch;
+		//if marketID doesn´t exist
+		if (marketID === null) {
 			try {
-				itemPriceFetch = await fetchData(desc.market_hash_name, "$");
-			} catch {
-				itemPriceFetch = 0.01;
+				const itemName = `${weaponName} | ${weaponSkin} (${wear})`;
+				marketID = await fetchweaponNameId(itemName);
+			} catch (err) {
+				console.log("marketId fetch error : " + err);
 			}
-
-			const numericPrice = Number(String(itemPriceFetch).replace(/[^0-9.]/g, ""));
-			itemPrice.textContent = `Market value : ${itemPriceFetch}`;
 
 			// Save to DB
 			try {
@@ -123,19 +116,26 @@ export async function loadMoreItems(invData, containerPerSteamAccount, deps) {
 					method: "POST",
 					headers: { "Content-Type": "application/json" },
 					body: JSON.stringify({
+						marketID: marketID,
 						weapon: weaponName,
 						name: weaponSkin,
 						condition: wear,
 						stattrak: weaponStattrak,
 						souvenir: weaponSouvenir,
-						price: numericPrice,
 					}),
 				});
-			} catch {
+			} catch (err) {
+				console.log("Save to DB error : " + err);
 			}
-		} else {
-			itemPrice.textContent = `Market value : ${dbRow.price}`;
 		}
+
+		try {
+			const weaponPrice = await fetchPrice(marketID, "€");
+			itemPrice.textContent = `Market value : ${weaponPrice}`;
+		} catch (err) {
+			console.log("fetch price error : " + err);
+		}
+
 
 		post.append(itemName, itemWear, itemImage, itemFloat, itemPrice);
 		normalPostContainer.append(post);

@@ -18,14 +18,13 @@ router.post("/price/get", async (req, res) => {
         const { weapon, name, condition, stattrak, souvenir } = req.body;
 
         const [rows] = await pool.execute(
-            `SELECT i.id, p.price, p.updated_at
-            FROM items i
-            LEFT JOIN prices p ON p.item_id = i.id
-            WHERE i.weapon = ?
-            AND i.name = ?
-            AND i.condition_name = ?
-            AND i.is_stattrak = ?
-            AND i.is_souvenir = ?
+            `SELECT marketID
+            FROM items
+            WHERE weapon = ?
+            AND name = ?
+            AND condition_name = ?
+            AND is_stattrak = ?
+            AND is_souvenir = ?
             LIMIT 1`,
             [weapon, name, condition, stattrak ? 1 : 0, souvenir ? 1 : 0]
         );
@@ -39,22 +38,13 @@ router.post("/price/get", async (req, res) => {
 
 router.post("/price/set", async (req, res) => {
     try {
-        const { weapon, name, condition, stattrak, souvenir, price } = req.body;
-
-        const [itemResult] = await pool.execute(
-            `INSERT INTO items (weapon, name, condition_name, is_stattrak, is_souvenir)
-            VALUES (?, ?, ?, ?, ?)
-            ON DUPLICATE KEY UPDATE id = LAST_INSERT_ID(id)`,
-            [weapon, name, condition, stattrak ? 1 : 0, souvenir ? 1 : 0]
-        );
-
-        const itemId = itemResult.insertId;
+        const { marketID, weapon, name, condition, stattrak, souvenir } = req.body;
 
         await pool.execute(
-            `INSERT INTO prices (item_id, price)
-            VALUES (?, ?)
-            ON DUPLICATE KEY UPDATE price = VALUES(price)`,
-            [itemId, price]
+            `INSERT INTO items (marketID, weapon, name, condition_name, is_stattrak, is_souvenir)
+            VALUES (?, ?, ?, ?, ?, ?)
+            ON DUPLICATE KEY UPDATE id = LAST_INSERT_ID(id)`,
+            [marketID, weapon, name, condition, stattrak ? 1 : 0, souvenir ? 1 : 0]
         );
 
         res.json({ ok: true });
@@ -67,7 +57,7 @@ router.post("/price/set", async (req, res) => {
 router.post("/users/set", async (req, res) => {
     try {
         const { username, password, steam_url } = req.body;
-        
+
         const password_hash = await hashPassword(password);
 
         await pool.execute(
@@ -100,12 +90,17 @@ router.post("/users/get", async (req, res) => {
         );
 
         const storedHash = rows[0].password_hash;
+        const steam_url = rows[0].steam_url;
 
         const checkedPassword = await checkPassword(password, storedHash)
 
-        res.json(checkedPassword);
+        if (!checkedPassword) {
+            return res.json(false);
+        } else {
+            return res.json({ checkedPassword, steam_url });
+        }
     } catch (err) {
-        res.json(false);
+        return res.json(false);
     }
 });
 
@@ -115,13 +110,7 @@ async function hashPassword(password) {
 }
 
 async function checkPassword(enteredPassword, storedHash) {
-    const match = await bcrypt.compare(enteredPassword, storedHash);
-
-    if (match) {
-        return true;
-    } else {
-        return false;
-    }
+    return await bcrypt.compare(enteredPassword, storedHash);
 }
 
 export default router;
