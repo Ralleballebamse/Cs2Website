@@ -83,7 +83,7 @@ export async function loadMoreItems(invData, containerPerSteamAccount, deps) {
 		// DB price/date
 		let dbRow = null;
 		try {
-			const res = await fetch("/api/mysql/price/get", {
+			const res = await fetch("/api/mysql/marketId/get", {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({
@@ -112,7 +112,7 @@ export async function loadMoreItems(invData, containerPerSteamAccount, deps) {
 
 			// Save to DB
 			try {
-				await fetch("/api/mysql/price/set", {
+				await fetch("/api/mysql/marketId/set", {
 					method: "POST",
 					headers: { "Content-Type": "application/json" },
 					body: JSON.stringify({

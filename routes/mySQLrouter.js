@@ -13,7 +13,7 @@ const pool = mysql.createPool({
     database: "cs2_website",
 });
 
-router.post("/price/get", async (req, res) => {
+router.post("/marketId/get", async (req, res) => {
     try {
         const { weapon, name, condition, stattrak, souvenir } = req.body;
 
@@ -36,7 +36,7 @@ router.post("/price/get", async (req, res) => {
     }
 });
 
-router.post("/price/set", async (req, res) => {
+router.post("/marketId/set", async (req, res) => {
     try {
         const { marketID, weapon, name, condition, stattrak, souvenir } = req.body;
 

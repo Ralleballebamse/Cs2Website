@@ -31,6 +31,14 @@ router.get("/market/price", async (req, res) => {
             if (currency === "€") {
                 const parts = data.sell_order_table.split("€")[0].split(">");
                 price = parts[parts.length - 1]?.trim() + "€";
+                if (price.includes(",--")) {
+                    console.log(price);
+
+                    let secondParts = price.split(",");
+                    price = secondParts[0] + "€";
+                }
+                console.log(price);
+                console.log("1");
             } else {
                 price = "$" + data.sell_order_table.split("$")[1]?.split("<")[0]?.trim();
             }
