@@ -15,8 +15,9 @@ export function initSorting(deps) {
 
         posts.forEach(post => {
             const priceA = parseFloat(
-                post.querySelector("h6").textContent.replace(/[^0-9.]/g, "")
+                post.querySelector("h6").textContent.replace(",", ".").replace(/[^0-9.]/g, "")
             );
+            console.log(priceA);
             if (priceA >= lowValue && priceA <= highValue) {
                 itemUserDecidePriceContainer.appendChild(post.cloneNode(true));
             }
