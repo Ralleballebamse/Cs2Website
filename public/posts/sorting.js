@@ -15,7 +15,7 @@ export function initSorting(deps) {
 
         posts.forEach(post => {
             const priceA = parseFloat(
-                post.querySelector("h6").textContent.replace(",", ".").replace(/[^0-9.]/g, "")
+                post.querySelector("h6").textContent.replace("+", "").replace(",", ".").replace(/[^0-9.]/g, "")
             );
             console.log(priceA);
             if (priceA >= lowValue && priceA <= highValue) {
@@ -44,10 +44,10 @@ export function initSorting(deps) {
         const posts = Array.from(container.querySelectorAll(".post"));
         posts.sort((a, b) => {
             const priceA = parseFloat(
-                a.querySelector("h6").textContent.replace(/[^0-9.]/g, "")
+                a.querySelector("h6").textContent.replace("+", "").replace(",", ".").replace(/[^0-9.]/g, "")
             );
             const priceB = parseFloat(
-                b.querySelector("h6").textContent.replace(/[^0-9.]/g, "")
+                b.querySelector("h6").textContent.replace("+", "").replace(",", ".").replace(/[^0-9.]/g, "")
             );
 
             if (sort === "highToLow") {

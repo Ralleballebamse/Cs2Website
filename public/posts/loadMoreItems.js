@@ -131,7 +131,11 @@ export async function loadMoreItems(invData, containerPerSteamAccount, deps) {
 
 		try {
 			const weaponPrice = await fetchPrice(marketID, "€");
-			itemPrice.textContent = `Market value : ${weaponPrice}`;
+			if (weaponPrice) {
+				itemPrice.textContent = `Market value : ${weaponPrice}`;
+			} else {
+				itemPrice.textContent = `Market value : 1800+`;
+			}
 		} catch (err) {
 			console.log("fetch price error : " + err);
 		}
