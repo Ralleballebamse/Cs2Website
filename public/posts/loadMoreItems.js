@@ -5,9 +5,37 @@ export async function loadMoreItems(invData, containerPerSteamAccount, deps) {
 		return link.replace("%owner_steamid%", steamid).replace("%assetid%", assetid);
 	}
 
+	function showInventoryMessage(message) {
+		const privateMessage = document.createElement("div");
+		privateMessage.classList.add("inventory-message");
+		privateMessage.textContent = message;
+		containerPerSteamAccount.append(privateMessage);
+	}
+
+	const errorMessage = `${invData?.error ?? invData?.Error ?? ""}`.toLowerCase();
+	const isPrivateInventory =
+		invData?.privateInventory ||
+		invData?.status === 401 ||
+		invData?.status === 403 ||
+		errorMessage.includes("private") ||
+		errorMessage.includes("not allowed");
+
+	if (isPrivateInventory) {
+		showInventoryMessage("This player's CS2 inventory is private.");
+		mainContainer.append(containerPerSteamAccount);
+		return;
+	}
+
+	if (!Array.isArray(invData?.descriptions) || !Array.isArray(invData?.assets)) {
+		showInventoryMessage("Could not load this player's CS2 inventory.");
+		mainContainer.append(containerPerSteamAccount);
+		return;
+	}
+
+	const assetProperties = Array.isArray(invData.asset_properties) ? invData.asset_properties : [];
 	const descByClass = new Map(invData.descriptions.map((d) => [d.classid, d]));
 	const propsByAssetId = new Map(
-		invData.asset_properties.map((ap) => [ap.assetid, ap.asset_properties])
+		assetProperties.map((ap) => [ap.assetid, ap.asset_properties])
 	);
 
 	for (let z = 0; z < invData.assets.length; z++) { //invData.assets.length

@@ -9,9 +9,20 @@ async function loadfiles(link) {
     try {
         const response = await fetch(link);
         const data = await response.json();
+        if (!response.ok) {
+            return {
+                ...data,
+                ok: false,
+                status: response.status
+            };
+        }
         return data;
     } catch (err) {
         console.error("Error loading file:", err);
+        return {
+            ok: false,
+            error: "Could not load inventory data"
+        };
     }
 }
 
