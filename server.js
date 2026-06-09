@@ -23,6 +23,16 @@ app.use("/api/mysql", mySQLrouter);
 app.use("/api/steam", itemSteamIDs);
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, "0.0.0.0", () => {
+const server = app.listen(PORT, "0.0.0.0", () => {
     console.log(`Backend running on http://0.0.0.0:${PORT}`);
+});
+
+server.on("error", (err) => {
+    if (err.code === "EADDRINUSE") {
+        console.error(`Port ${PORT} is already in use. Stop the old server or change PORT in .env.`);
+        process.exit(1);
+    }
+
+    console.error("Server failed to start:", err);
+    process.exit(1);
 });

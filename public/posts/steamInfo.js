@@ -29,8 +29,9 @@ export function initSteamInfo(deps) {
         containers.push(containerPerSteamAccount);
         mainContainer.append(containerPerSteamAccount);
 
-        name.textContent = data.name;
-        img.src = data.avatar;
+        name.textContent = r.ok && data.name ? data.name : `Steam ${steamid}`;
+        img.src = r.ok && data.avatar ? data.avatar : "/favicon.ico";
+        img.alt = "";
         btn.append(img, name);
 
         btn.dataset.steamid = steamid;

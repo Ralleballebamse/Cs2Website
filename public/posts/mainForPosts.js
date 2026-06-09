@@ -8,7 +8,17 @@ import { resetForNewMatch } from "./resetData.js";
 async function loadfiles(link) {
     try {
         const response = await fetch(link);
-        const data = await response.json();
+        const text = await response.text();
+        let data;
+
+        try {
+            data = JSON.parse(text);
+        } catch {
+            data = {
+                error: text || response.statusText || "Could not load inventory data"
+            };
+        }
+
         if (!response.ok) {
             return {
                 ...data,
@@ -21,6 +31,7 @@ async function loadfiles(link) {
         console.error("Error loading file:", err);
         return {
             ok: false,
+            status: 0,
             error: "Could not load inventory data"
         };
     }
@@ -164,6 +175,7 @@ async function main() {
                 arrayAssets,
                 normalPostContainer,
                 mainContainer,
+                steamid,
                 fetchweaponNameId,
                 fetchPrice
             });
@@ -172,6 +184,8 @@ async function main() {
             promise.then(result => {
                 console.log("STREAM:", result);
             });
+
+            await sleep(900);
         }
         console.log("\nAll tasks have been started (but not finished yet)");
     }

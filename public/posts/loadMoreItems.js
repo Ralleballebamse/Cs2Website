@@ -1,9 +1,5 @@
 export async function loadMoreItems(invData, containerPerSteamAccount, deps) {
-	const { arrayAssets, normalPostContainer, mainContainer, fetchweaponNameId, fetchPrice } = deps;
-
-	function createItemInspectLink(assetid, steamid, link) {
-		return link.replace("%owner_steamid%", steamid).replace("%assetid%", assetid);
-	}
+	const { arrayAssets, normalPostContainer, mainContainer, steamid, fetchweaponNameId, fetchPrice } = deps;
 
 	function showInventoryMessage(message) {
 		const privateMessage = document.createElement("div");
@@ -18,10 +14,18 @@ export async function loadMoreItems(invData, containerPerSteamAccount, deps) {
 		invData?.status === 401 ||
 		invData?.status === 403 ||
 		errorMessage.includes("private") ||
-		errorMessage.includes("not allowed");
+		errorMessage.includes("not allowed") ||
+		errorMessage.includes("forbidden") ||
+		errorMessage.includes("unavailable");
 
 	if (isPrivateInventory) {
 		showInventoryMessage("This player's CS2 inventory is private.");
+		mainContainer.append(containerPerSteamAccount);
+		return;
+	}
+
+	if (invData?.status === 429) {
+		showInventoryMessage("Steam is rate limiting inventory requests. Try again in a minute.");
 		mainContainer.append(containerPerSteamAccount);
 		return;
 	}
