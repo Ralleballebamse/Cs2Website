@@ -1,5 +1,21 @@
-# Cs2Website
-Making my own website where I can see players in my game skins
+# SkinScope
+
+A local Express website for browsing CS2 inventories and Steam market prices.
+
+## Run locally
+
+1. Install dependencies with `npm ci`.
+2. Keep your existing MySQL database and root `.env` configuration.
+3. Start the site with `npm run dev` and open http://localhost:3000.
+4. Run all tests with `npm test`.
+
+See [Project structure](docs/architecture.md) for the directory layout and file
+placement rules. The entry point is now `src/server.js`; the npm commands take
+care of this change. Restart the dev server and hard-refresh after the restructure.
+Old page URLs redirect to their new locations, and API paths are unchanged.
+
+Reload the browser extension from `extensions/faceit-bridge/` if it was installed
+from the previous folder.
 
 ## Market prices
 
@@ -28,7 +44,7 @@ do not contain prices and are not automatically scraped on every startup.
 Only item names actually viewed through the site are enrolled for refresh.
 
 Optional database configuration: DB_HOST, DB_USER, DB_PASSWORD, DB_NAME.
-Run tests with node --test tests/marketPrices.test.js.
+Run tests with node --test tests/server/marketPrices.test.js.
 
 ## Steam profile backgrounds
 
@@ -52,7 +68,7 @@ Failed requests are not cached. Expired/old entries are evicted; if browser
 storage is blocked or full the app continues with an in-memory cache, which
 does not survive reloads. Closing the tab ends the session cache.
 
-Run browser-cache tests with node --test tests/sessionCache.test.js.
+Run browser-cache tests with node --test tests/client/sessionCache.test.js.
 
 ## Accounts and login
 
@@ -89,7 +105,7 @@ Login and registration attempts are limited per IP within each server process.
 Restart npm run dev after updating to load the new routes. The old demo
 /api/mysql/users/get and /api/mysql/users/set routes have been removed.
 
-Run all tests with node --test tests/*.test.js.
+Run all tests with npm test.
 
 ## Appearance
 

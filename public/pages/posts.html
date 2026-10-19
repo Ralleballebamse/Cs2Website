@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+
+<head>
+    <script src="/assets/scripts/shared/theme.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A better twitter">
+    <link rel="canonical" href="/pages/posts.html">
+    <link rel="stylesheet" href="/assets/styles/pages/posts.css">
+    <link rel="stylesheet" href="/assets/styles/site.css">
+    <link rel="shortcut icon" href="/assets/images/favicon.svg">
+    <script type="module" src="/assets/scripts/inventory/index.js"></script>
+    <title>SkinScope</title>
+    <script type="module" src="/assets/scripts/shared/account.js"></script>
+    <link rel="stylesheet" href="/assets/styles/theme.css">
+</head>
+
+<body>
+    <div class="container">
+
+        <header class="header">
+            <nav class="nav-list">
+                <h1 class="brand">SkinScope</h1>
+                <ul class="nav-center">
+                    <li><a href="/">Home</a></li>
+                    <li><a id="active" href="/pages/posts.html">Posts</a></li>
+                    <li><a href="/pages/guide.html">Guide</a></li>
+                    <li><a href="/pages/contact.html">Contact</a></li>
+                </ul>
+                <a class="login-link" href="/pages/login.html">Login</a>
+            </nav>
+        </header>
+
+
+        <div class="main-wrap">
+            <aside class="sidebar" id="sidebar">
+                <form id="SearchForSkins" novalidate>
+                    <div class="field">
+                        <label for="SearchForSkinsTextArea">Search</label>
+                        <textarea name="SearchForSkins" id="SearchForSkinsTextArea" rows="1" maxlength="20"></textarea>
+                    </div>
+                </form>
+                <form id="PriceToPrice" novalidate>
+                    <div class="field">
+                        <label for="PriceHigh">High</label>
+                        <textarea name="PriceHigh" id="PriceHigh" rows="1" maxlength="5"></textarea>
+                    </div>
+                    <div class="field">
+                        <label for="PriceLow">Low</label>
+                        <textarea name="PriceLow" id="PriceLow" rows="1" maxlength="5"></textarea>
+                    </div>
+                </form>
+                <form id="FloatToFloat" novalidate>
+                    <div class="field">
+                        <label for="FloatHigh">High Float</label>
+                        <textarea name="FloatHigh" id="FloatHigh" rows="1" maxlength="10" inputmode="decimal"></textarea>
+                    </div>
+                    <div class="field">
+                        <label for="FloatLow">Low Float</label>
+                        <textarea name="FloatLow" id="FloatLow" rows="1" maxlength="10" inputmode="decimal"></textarea>
+                    </div>
+                </form>
+                <div class="multipleProfileButtons" id="multipleProfileButtons">
+                    <!-- Here is where all steam names and profile pictures adds -->
+                </div>
+            </aside>
+
+            <main class="main" id="mainContainer">
+                <div class="dropdown" id="sortDropdown">
+                    <button class="dropbtn" type="button">
+                        <span class="label">Main Menu</span>
+                        <span class="chev"></span>
+                    </button>
+
+                    <div class="dropdown-content">
+                        <button id="sortItemsByHighPriceToLowBtn">Highest Price</button>
+                        <button id="sortItemsByLowPriceToHighBtn">Lowest Price</button>
+                        <button id="sortItemsByHighFloatToLowBtn">Highest Float</button>
+                        <button id="sortItemsByLowFloatToHighBtn">Lowest Float</button>
+                        <button id="switchToMain">Main Menu</button>
+                    </div>
+                </div>
+                <div class="posts" id="posts"></div>
+                <div class="posts" id="sortedPosts"></div>
+            </main>
+        </div>
+
+        <footer class="footer" id="contact">
+            <div class="leftfooter">
+                <p>&copy; 2025 Rasmus Rolin</p>
+            </div>
+
+            <div class="rightfooter">
+                <h2>Contact Details</h2>
+                <address>
+                    <p>Phone: <a href="tel:123456789">123-456-789</a></p>
+                    <p>Email: <a href="mailto:Test@gmail.com">Test@gmail.com</a></p>
+                    <p>Address: Näsbychaussén 48A</p>
+                    <p>Open hours: 07-16</p>
+                </address>
+            </div>
+        </footer>
+    </div>
+
+</body>

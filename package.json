@@ -1,12 +1,12 @@
 {
   "name": "my_cs2_website",
   "version": "1.0.0",
-  "main": "contact.js",
+  "main": "src/server.js",
   "type": "module",
   "scripts": {
-    "dev": "node server.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "dev": "node src/server.js",
+    "test": "node --test",
+    "start": "node src/server.js"
   },
   "keywords": [],
   "author": "",
