@@ -1,17 +1,11 @@
 import express from "express";
-import mysql from "mysql2/promise";
+import { pool } from "../services/database.js";
 import bcrypt from "bcrypt";
 
 const saltRounds = 10;
 
 const router = express.Router();
 
-const pool = mysql.createPool({
-    host: "127.0.0.1",
-    user: "cs2dev",
-    password: "cs2dev123",
-    database: "cs2_website",
-});
 
 router.post("/marketId/get", async (req, res) => {
     try {

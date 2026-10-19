@@ -81,7 +81,7 @@ async function main() {
     itemUserDecidePriceContainer.style.display = "none";
 
 
-    const { loadInSteamData, fetchSteamId, fetchweaponNameId, fetchPrice } = initSteamInfo({
+    const { loadInSteamData, fetchSteamId } = initSteamInfo({
         sleep,
         loadfiles,
         containers,
@@ -175,9 +175,7 @@ async function main() {
                 arrayAssets,
                 normalPostContainer,
                 mainContainer,
-                steamid,
-                fetchweaponNameId,
-                fetchPrice
+                steamid
             });
 
             // Attach a handler for WHEN it finishes

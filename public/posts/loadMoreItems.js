@@ -1,5 +1,6 @@
+import { requestMarketPrices } from "./marketPrices.js";
 export async function loadMoreItems(invData, containerPerSteamAccount, deps) {
-	const { arrayAssets, normalPostContainer, mainContainer, steamid, fetchweaponNameId, fetchPrice } = deps;
+	const { arrayAssets, normalPostContainer, mainContainer, steamid } = deps;
 
 	function showInventoryMessage(message) {
 		const privateMessage = document.createElement("div");
@@ -76,9 +77,6 @@ export async function loadMoreItems(invData, containerPerSteamAccount, deps) {
 		let weaponPart = parts[0] ?? "";
 		let namePart = parts[1] ?? "";
 
-		const weaponSouvenir = weaponPart.includes("Souvenir");
-		const weaponStattrak = weaponPart.includes("StatTrak™");
-
 		weaponPart = weaponPart
 			.replace("Souvenir ", "")
 			.replace("StatTrak™ ", "")
@@ -111,73 +109,14 @@ export async function loadMoreItems(invData, containerPerSteamAccount, deps) {
 
 		// --- price ---
 		const itemPrice = document.createElement("h6");
-		let marketID;
-
-		// DB price/date
-		let dbRow = null;
-		try {
-			const res = await fetch("/api/mysql/marketId/get", {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({
-					weapon: weaponName,
-					name: weaponSkin,
-					condition: wear,
-					stattrak: weaponStattrak,
-					souvenir: weaponSouvenir,
-				}),
-			});
-			dbRow = await res.json();
-		} catch {
-			dbRow = null;
-		}
-
-		marketID = dbRow?.marketID ?? null;
-
-		//if marketID doesn´t exist
-		if (marketID === null) {
-			try {
-				const itemName = `${weaponName} | ${weaponSkin} (${wear})`;
-				marketID = await fetchweaponNameId(itemName);
-			} catch (err) {
-				console.log("marketId fetch error : " + err);
-			}
-
-			// Save to DB
-			try {
-				await fetch("/api/mysql/marketId/set", {
-					method: "POST",
-					headers: { "Content-Type": "application/json" },
-					body: JSON.stringify({
-						marketID: marketID,
-						weapon: weaponName,
-						name: weaponSkin,
-						condition: wear,
-						stattrak: weaponStattrak,
-						souvenir: weaponSouvenir,
-					}),
-				});
-			} catch (err) {
-				console.log("Save to DB error : " + err);
-			}
-		}
-
-		try {
-			const weaponPrice = await fetchPrice(marketID, "€");
-			if (weaponPrice) {
-				itemPrice.textContent = `Market value : ${weaponPrice}`;
-			} else {
-				itemPrice.textContent = `Market value : 1800+`;
-			}
-		} catch (err) {
-			console.log("fetch price error : " + err);
-		}
-
-
+		const marketName = desc.marketable === 0 ? null : desc.market_hash_name;
+		itemPrice.textContent = marketName ? "Market value : loading" : "Market value : unavailable";
+		if (marketName) itemPrice.dataset.marketName = marketName;
 		post.append(itemName, itemWear, itemImage, itemFloat, itemPrice);
 		normalPostContainer.append(post);
 		containerPerSteamAccount.append(post.cloneNode(true));
 	}
 
 	mainContainer.append(containerPerSteamAccount);
+	requestMarketPrices();
 }

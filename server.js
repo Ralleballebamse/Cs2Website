@@ -6,6 +6,7 @@ import steamProfileRoutes from "./routes/steamProfile.js";
 import faceit from "./routes/faceit.js";
 import mySQLrouter from "./routes/mySQLrouter.js";
 import itemSteamIDs from "./routes/itemSteamIDs.js";
+import marketPrices from "./routes/marketPrices.js";
 //import githubLoad from "./routes/githubLoad.js";
 
 const app = express();
@@ -24,6 +25,7 @@ app.use(steamProfileRoutes);
 app.use("/api/faceit", faceit);
 app.use("/api/mysql", mySQLrouter);
 app.use("/api/steam", itemSteamIDs);
+app.use("/api/steam", marketPrices);
 
 const PORT = process.env.PORT || 3000;
 const server = app.listen(PORT, "0.0.0.0", () => {
