@@ -29,3 +29,17 @@ Only item names actually viewed through the site are enrolled for refresh.
 
 Optional database configuration: DB_HOST, DB_USER, DB_PASSWORD, DB_NAME.
 Run tests with node --test tests/marketPrices.test.js.
+
+## Browser session cache
+
+Steam profiles and inventories (24 hours, including private results),
+and match rosters (5 minutes) are cached in sessionStorage. Reloading the same
+tab reuses unexpired data without another profile/inventory request. Profiles
+and inventories are keyed by Steam ID, rosters by FACEIT match ID. A new match
+replaces the visible roster and may reuse overlapping players' valid data.
+The current match ID is still checked with the backend to detect new matches.
+Failed requests are not cached. Expired/old entries are evicted; if browser
+storage is blocked or full the app continues with an in-memory cache, which
+does not survive reloads. Closing the tab ends the session cache.
+
+Run browser-cache tests with node --test tests/sessionCache.test.js.

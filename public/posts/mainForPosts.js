@@ -81,7 +81,7 @@ async function main() {
     itemUserDecidePriceContainer.style.display = "none";
 
 
-    const { loadInSteamData, fetchSteamId } = initSteamInfo({
+    const { loadInSteamData, fetchSteamId, hasCachedPlayer } = initSteamInfo({
         sleep,
         loadfiles,
         containers,
@@ -168,8 +168,10 @@ async function main() {
             const steamid = steamIds[i];
 
             // Start the async work
-            const steamdata = await loadInSteamData(steamid);
-            const ContainerPerSteamAccount = await fetchSteamId(steamid);
+            if (i > 0 && !hasCachedPlayer(steamid)) await sleep(900);
+            const [steamdata, ContainerPerSteamAccount] = await Promise.all([
+                loadInSteamData(steamid), fetchSteamId(steamid)
+            ]);
 
             const promise = loadMoreItems(steamdata, ContainerPerSteamAccount, {
                 arrayAssets,
@@ -183,7 +185,6 @@ async function main() {
                 if (result !== undefined) console.log("STREAM:", result);
             });
 
-            await sleep(900);
         }
         console.log("\nAll tasks have been started (but not finished yet)");
     }
