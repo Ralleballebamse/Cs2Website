@@ -70,7 +70,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 2rem;
+    gap: clamp(0.5rem, 2vw, 2rem);
     margin: 0;
     padding: 0;
     list-style: none;
@@ -232,7 +232,7 @@ body {
     color: inherit;
 }
 
-@media (max-width: 760px) {
+@media (max-width: 900px) {
     .header .nav-list {
         grid-template-columns: 1fr auto;
         min-height: auto;
