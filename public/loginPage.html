@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="A better twitter">
+    <meta name="description" content="Sign in to SkinScope or create an account.">
     <link rel="canonical" href="/index.html">
-    <link rel="stylesheet" href="/loginPage/loginPage.css">
     <link rel="stylesheet" href="/shared/site.css">
+    <link rel="stylesheet" href="/loginPage/loginPage.css">
     <link rel="shortcut icon" href="/favicon.ico">
     <script type="module" src="/loginPage/loginPage.js"></script>
-    <title>SkinScope</title>
+    <title>Sign in | SkinScope</title>
+    <script type="module" src="/shared/account.js"></script>
 </head>
 
 <body>
@@ -29,22 +30,64 @@
         </header>
 
 
-        <main class="main" id = "main">
-            <h2>LoginPage</h2>
-            <div class="field" id = "UsernameField">
-                <label for="Username">Username</label>
-                <textarea name="Username" id="UsernameTextArea" rows="1" maxlength="20"></textarea>
+        <main class="main auth-layout" id="main">
+            <div class="auth-intro">
+                <p class="eyebrow">WELCOME TO SKINSCOPE</p>
+                <h2>Your next match.<br><span>A closer look.</span></h2>
+                <p>Explore CS2 inventories, compare skins, and find the details that make a loadout stand out.</p>
+                <div class="auth-features">
+                    <div class="auth-feature"><span aria-hidden="true">01</span> Explore your match’s inventories</div>
+                    <div class="auth-feature"><span aria-hidden="true">02</span> Compare Steam market prices</div>
+                    <div class="auth-feature"><span aria-hidden="true">03</span> Find skins by name, price and float</div>
+                </div>
             </div>
-            <div class="field" id = "PasswordField">
-                <label for="Password">Password</label>
-                <textarea name="Password" id="PasswordTextArea" rows="1" maxlength="20"></textarea>
+            <div class="auth-card">
+                <section id="authPanel" aria-labelledby="authTitle">
+                    <div class="auth-tabs" role="group" aria-label="Account access">
+                        <button type="button" data-auth-mode="login" aria-pressed="true">Sign in</button>
+                        <button type="button" data-auth-mode="register" aria-pressed="false">Create account</button>
+                    </div>
+                    <h3 id="authTitle">Welcome back</h3>
+                    <p id="authSubtitle">Sign in to your SkinScope account.</p>
+                    <form id="authForm">
+                        <div class="auth-field">
+                            <label for="username">Username</label>
+                            <input id="username" name="username" autocomplete="username" maxlength="50" placeholder="Your username" required>
+                        </div>
+                        <div class="auth-field">
+                            <label for="password">Password</label>
+                            <div class="password-wrap">
+                                <input id="password" name="password" type="password" autocomplete="current-password" placeholder="Your password" required>
+                                <button class="password-toggle" id="togglePassword" type="button" aria-controls="password" aria-pressed="false">Show</button>
+                            </div>
+                        </div>
+                        <div id="registerFields" hidden>
+                            <div class="auth-field">
+                                <label for="confirmPassword">Confirm password</label>
+                                <input id="confirmPassword" name="confirmPassword" type="password" autocomplete="new-password" placeholder="Repeat your password">
+                                <small class="field-hint">Use at least 8 characters. Choose a password you don’t use elsewhere.</small>
+                            </div>
+                            <div class="auth-field">
+                                <label for="steamUrl">Steam profile <span class="field-hint">Optional</span></label>
+                                <input id="steamUrl" name="steamUrl" type="url" maxlength="255" placeholder="https://steamcommunity.com/id/yourname">
+                            </div>
+                        </div>
+                        <button class="auth-primary" id="authSubmit" type="submit">Sign in</button>
+                    </form>
+                    <p id="authStatus" class="auth-status" role="status" aria-live="polite"></p>
+                    <p class="auth-note">Use your SkinScope password, never your Steam password.</p>
+                </section>
+                <section id="accountPanel" class="account-panel" hidden aria-labelledby="accountTitle">
+                    <div class="account-avatar" id="accountInitial" aria-hidden="true"></div>
+                    <span class="account-label">SIGNED IN</span>
+                    <h3 id="accountTitle" tabindex="-1">Welcome, <span id="accountName"></span></h3>
+                    <p>You’re signed in to SkinScope.</p>
+                    <dl class="account-details"><dt>Steam profile</dt><dd id="accountSteam"></dd></dl>
+                    <a class="account-continue" href="posts.html">Explore inventories &rarr;</a>
+                    <button id="logout" class="logout-button" type="button">Sign out</button>
+                    <p id="accountStatus" class="auth-status is-error" role="status"></p>
+                </section>
             </div>
-            <div class="field" id = "SteamUrlField">
-                <label for="SteamUrl">SteamUrl</label>
-                <textarea name="SteamUrl" id="SteamUrlTextArea" rows="1" maxlength="40"></textarea>
-            </div>
-            <button id="LoginUser">Login</button>
-            <button id="CreateUser">Create</button>
         </main>
 
 

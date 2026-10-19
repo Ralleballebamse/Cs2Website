@@ -43,3 +43,40 @@ storage is blocked or full the app continues with an in-memory cache, which
 does not survive reloads. Closing the tab ends the session cache.
 
 Run browser-cache tests with node --test tests/sessionCache.test.js.
+
+## Accounts and login
+
+The login page supports sign-in, account creation, session restoration and
+sign-out. Existing bcrypt accounts continue to work. New usernames use 3–30
+letters, numbers, underscores or hyphens; new passwords require at least eight
+characters and must fit bcrypt's 72-byte limit. The Steam profile URL is optional
+and is a saved profile link, not proof of Steam ownership or Steam sign-in.
+
+POST /api/auth/register and /api/auth/login issue a random seven-day session
+cookie (HttpOnly, SameSite=Lax, Secure when the request uses HTTPS). Only a hash
+of the session token is stored in the additive user_sessions MySQL table.
+GET /api/auth/me restores account details; POST /api/auth/logout revokes the
+session. Authentication is checked by the server rather than localStorage.
+Public inventory pages remain public. There is no password reset or email
+verification flow yet.
+
+All pages check the same server session and replace Login with a circular
+account avatar when signed in. The avatar opens a dedicated account page with profile details and sign-out;
+the login page and header update together without reloading. A linked numeric
+Steam profile supplies a cached avatar when available; otherwise a local default
+image is used. Custom /id/ links and numeric /profiles/ links are supported.
+The dedicated account page can save or remove a Steam profile using the
+authenticated POST /api/auth/profile route. Only the session's own user record
+can be updated. The link remains unverified ownership information.
+
+Posts always includes the signed-in user's linked inventory, marked (You), even
+without a FACEIT match. That inventory remains first as matches change and is
+not duplicated if the user is also on the match roster. Private inventories
+still cannot be read. Both browser and backend caches reuse profile lookups.
+
+Authentication writes require JSON and reject cross-origin browser requests.
+Login and registration attempts are limited per IP within each server process.
+Restart npm run dev after updating to load the new routes. The old demo
+/api/mysql/users/get and /api/mysql/users/set routes have been removed.
+
+Run all tests with node --test tests/*.test.js.

@@ -1,161 +1,119 @@
+import { accountReady, setCurrentUser } from "../shared/account.js";
 
-async function main() {
+const form = document.getElementById("authForm");
+const status = document.getElementById("authStatus");
+const submit = document.getElementById("authSubmit");
+const password = document.getElementById("password");
+const tabs = [...document.querySelectorAll("[data-auth-mode]")];
+let mode = "login";
+let busy = false;
 
-    //Variables
-    let createUserUsername = true;
-    let createUserPassword = true;
-    let createUserSteamUrl = true;
-    let loginUserActive = true;
-    let createUserActive = false;
-
-    //Buttons
-    const createButton = document.getElementById("CreateUser");
-
-    const mainContainer = document.getElementById("main");
-
-    const usernameTextArea = document.getElementById("UsernameTextArea");
-    const passwordTextArea = document.getElementById("PasswordTextArea");
-    const steamUrlTextArea = document.getElementById("SteamUrlTextArea");
-    const usernameField = document.getElementById("UsernameField");
-    const passwordField = document.getElementById("PasswordField");
-    const steamUrlField = document.getElementById("SteamUrlField");
-
-    const steamUrlfield = document.getElementById("SteamUrlField");
-    steamUrlfield.style.display = "none";
-
-    const noUsernameText = document.createElement("h4");
-    noUsernameText.textContent = "Username has to have least 6 letters!";
-    usernameField.append(noUsernameText);
-    noUsernameText.style.display = "none";
-
-    const noPasswordText = document.createElement("h4");
-    noPasswordText.textContent = "Password has to have least 6 letters!";
-    passwordField.append(noPasswordText);
-    noPasswordText.style.display = "none";
-
-    const noSteamUrlText = document.createElement("h4");
-    noSteamUrlText.textContent = "SteamUrl has to have least 10 letters!";
-    steamUrlField.append(noSteamUrlText);
-    noSteamUrlText.style.display = "none";
-
-    const usernameExistsText = document.createElement("h4");
-    usernameExistsText.textContent = "Username already exist!";
-    mainContainer.append(usernameExistsText);
-    usernameExistsText.style.display = "none";
-
-    const incorrectLogin = document.createElement("h4");
-    incorrectLogin.textContent = "Incorrect username or password!";
-    mainContainer.append(incorrectLogin);
-    incorrectLogin.style.display = "none";
-
-    const correctLogin = document.createElement("h4");
-    correctLogin.textContent = "Login successful!";
-    mainContainer.append(correctLogin);
-    correctLogin.style.display = "none";
-
-
-    createButton.addEventListener("click", async () => {
-        loginUserActive = false;
-        if (createUserActive) {
-            //Attemt to create user
-            const userUsername = usernameTextArea.value;
-            const userPassword = passwordTextArea.value;
-            const userSteamUrl = steamUrlTextArea.value;
-
-            if (userUsername.length <= 5) {
-                noUsernameText.style.display = "flex";
-                createUserUsername = false;
-            } else {
-                noUsernameText.style.display = "none";
-                createUserUsername = true;
-            }
-            if (userPassword.length <= 5) {
-                noPasswordText.style.display = "flex";
-                createUserPassword = false;
-            } else {
-                noPasswordText.style.display = "none";
-                createUserPassword = true;
-            }
-            if (userSteamUrl.length <= 9) {
-                noSteamUrlText.style.display = "flex";
-                createUserSteamUrl = false;
-            } else {
-                noSteamUrlText.style.display = "none";
-                createUserSteamUrl = true;
-            }
-            if (createUserUsername && createUserPassword && createUserSteamUrl) {
-                const response = await fetch("/api/mysql/users/set", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        username: userUsername,
-                        password: userPassword,
-                        steam_url: userSteamUrl
-                    })
-                });
-
-                const data = await response.json();
-
-                if (!data.ok && data.reason === "username_exists") {
-                    usernameExistsText.style.display = "flex";
-                }
-                else {
-                    usernameExistsText.style.display = "none";
-                }
-            }
-        }
-        correctLogin.style.display = "none";
-        incorrectLogin.style.display = "none";
-        steamUrlfield.style.display = "flex";
-        createUserActive = true;
-    });
-
-    const loginButton = document.getElementById("LoginUser");
-    loginButton.addEventListener("click", async () => {
-        createUserActive = false;
-        if (loginUserActive) {
-            //Attempt to login user
-
-            const userUsername = usernameTextArea.value;
-            const userPassword = passwordTextArea.value;
-            const userSteamUrl = "";
-
-            let dbRow = null;
-
-            if (userUsername && userPassword) {
-                try {
-                    const res = await fetch("/api/mysql/users/get", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({
-                            username: userUsername,
-                            password: userPassword
-                        }),
-                    });
-                    dbRow = await res.json();
-                } catch {
-                }
-            }
-            console.log(dbRow);
-            if (dbRow) {
-                localStorage.setItem("steamUrl", dbRow.steam_url); // Not steam_url, steamid
-                localStorage.setItem("username", dbRow.username);
-
-                correctLogin.style.display = "flex";
-                incorrectLogin.style.display = "none";
-            } else {
-                correctLogin.style.display = "none";
-                incorrectLogin.style.display = "flex";
-            }
-            console.log(localStorage.getItem("steamUrl"))
-        }
-        usernameExistsText.style.display = "none";
-        noUsernameText.style.display = "none";
-        noPasswordText.style.display = "none";
-        noSteamUrlText.style.display = "none";
-        steamUrlfield.style.display = "none";
-        loginUserActive = true;
-    });
+function message(text = "", error = false) {
+    status.textContent = text;
+    status.classList.toggle("is-error", error);
 }
 
-main()
+function setMode(value) {
+    if (busy) return;
+    mode = value;
+    const register = mode === "register";
+    document.getElementById("registerFields").hidden = !register;
+    document.getElementById("confirmPassword").required = register;
+    document.querySelectorAll("#registerFields input").forEach(input => input.disabled = !register);
+    const username = document.getElementById("username");
+    if (register) username.pattern = "[A-Za-z0-9_-]{3,30}";
+    else username.removeAttribute("pattern");
+    password.minLength = register ? 8 : 1;
+    password.autocomplete = register ? "new-password" : "current-password";
+    document.getElementById("authTitle").textContent = register ? "Create your account" : "Welcome back";
+    document.getElementById("authSubtitle").textContent = register ? "Choose your SkinScope username and password." : "Sign in to your SkinScope account.";
+    submit.textContent = register ? "Create account" : "Sign in";
+    tabs.forEach(tab => {
+        tab.classList.toggle("selected", tab.dataset.authMode === value);
+        tab.setAttribute("aria-pressed", String(tab.dataset.authMode === value));
+    });
+    message();
+}
+
+function showUser(user) {
+    document.getElementById("authPanel").hidden = Boolean(user);
+    document.getElementById("accountPanel").hidden = !user;
+    if (!user) return;
+    document.getElementById("accountName").textContent = user.username;
+    document.getElementById("accountInitial").textContent = user.username.slice(0, 1).toUpperCase();
+    document.getElementById("accountSteam").textContent = user.steam_url || "No Steam profile added.";
+    form.reset();
+    password.type = "password";
+    document.getElementById("togglePassword").textContent = "Show";
+    document.getElementById("togglePassword").setAttribute("aria-pressed", "false");
+    message();
+}
+
+async function api(path, body) {
+    const response = await fetch(`/api/auth/${path}`, body === undefined ? { cache: "no-store" } : {
+        method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body),
+    });
+    let data;
+    try { data = await response.json(); } catch {
+        throw new Error(response.status === 404 ? "Restart the server to enable the updated login page." : "Could not reach the login service. Please try again.");
+    }
+    if (!response.ok) throw new Error(data.error || "Something went wrong. Please try again.");
+    return data;
+}
+
+tabs.forEach(tab => tab.addEventListener("click", () => setMode(tab.dataset.authMode)));
+document.getElementById("togglePassword").addEventListener("click", e => {
+    const showing = password.type === "password";
+    password.type = showing ? "text" : "password";
+    e.currentTarget.textContent = showing ? "Hide" : "Show";
+    e.currentTarget.setAttribute("aria-pressed", String(showing));
+});
+
+form.addEventListener("submit", async e => {
+    e.preventDefault();
+    if (busy || !form.reportValidity()) return;
+    if (mode === "register" && password.value !== document.getElementById("confirmPassword").value) {
+        message("Your passwords do not match.", true);
+        document.getElementById("confirmPassword").focus();
+        return;
+    }
+    busy = true;
+    submit.disabled = true;
+    tabs.forEach(tab => tab.disabled = true);
+    message(mode === "register" ? "Creating your account…" : "Signing in…");
+    try {
+        const data = await api(mode, { username: document.getElementById("username").value.trim(),
+            password: password.value, steam_url: document.getElementById("steamUrl").value.trim() });
+        setCurrentUser(data.user);
+        document.getElementById("accountTitle").focus();
+    } catch (err) { message(err.message, true); }
+    finally {
+        busy = false;
+        submit.disabled = false;
+        tabs.forEach(tab => tab.disabled = false);
+    }
+});
+
+document.getElementById("logout").addEventListener("click", async e => {
+    e.currentTarget.disabled = true;
+    const accountStatus = document.getElementById("accountStatus");
+    accountStatus.textContent = "";
+    try {
+        await api("logout", {});
+        setCurrentUser(null);
+        setMode("login");
+        message("You have been signed out.");
+    } catch (err) { accountStatus.textContent = err.message; }
+    finally { document.getElementById("logout").disabled = false; }
+});
+
+setMode("login");
+// Old localStorage values are not authentication; the server session is authoritative.
+try { localStorage.removeItem("username"); localStorage.removeItem("steamUrl"); } catch { /* Storage is optional. */ }
+submit.disabled = true;
+tabs.forEach(tab => tab.disabled = true);
+window.addEventListener("skinscope:account", event => showUser(event.detail));
+accountReady.then(user => showUser(user)).finally(() => {
+    submit.disabled = false;
+    tabs.forEach(tab => tab.disabled = false);
+});

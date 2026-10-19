@@ -232,6 +232,13 @@ body {
     color: inherit;
 }
 
+[hidden] { display: none !important; }
+.header .account-nav { position: relative; justify-self: end; grid-column: 3; }
+.header .account-avatar-button { position: relative; display: block; width: 44px; height: 44px; padding: 0; border: 2px solid #ffffff25; border-radius: 50%; background: #14243c; cursor: pointer; }
+.account-avatar-button img { display: block; width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+.header .account-avatar-button:hover { border-color: var(--site-accent); }
+.account-online-dot { position: absolute; right: -1px; bottom: 0; width: 11px; height: 11px; border: 2px solid #07101f; border-radius: 50%; background: #7ce565; }
+
 @media (max-width: 900px) {
     .header .nav-list {
         grid-template-columns: 1fr auto;
@@ -248,6 +255,8 @@ body {
         grid-row: 1;
     }
 
+    .header .account-nav { grid-column: 2; grid-row: 1; }
+
     .header .nav-center {
         position: static;
         grid-column: 1 / -1;
@@ -258,3 +267,5 @@ body {
         transform: none;
     }
 }
+
+.account-avatar-button:focus-visible { outline: 2px solid var(--site-accent-bright); outline-offset: 3px; }

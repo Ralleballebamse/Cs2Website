@@ -1,8 +1,8 @@
 import express from "express";
 import { pool } from "../services/database.js";
-import bcrypt from "bcrypt";
 
-const saltRounds = 10;
+
+
 
 const router = express.Router();
 
@@ -47,64 +47,5 @@ router.post("/marketId/set", async (req, res) => {
         res.status(500).json({ error: "DB error" });
     }
 });
-
-router.post("/users/set", async (req, res) => {
-    try {
-        const { username, password, steam_url } = req.body;
-
-        const password_hash = await hashPassword(password);
-
-        await pool.execute(
-            `INSERT INTO users (username, password_hash, steam_url)
-            VALUES (?, ?, ?)`,
-            [username, password_hash, steam_url]
-        );
-
-        res.json({ ok: true, created: true });
-    } catch (err) {
-
-        if (err.code === "ER_DUP_ENTRY") {
-            return res.json({ ok: false, reason: "username_exists" });
-        }
-
-        console.error(err);
-        res.status(500).json({ error: "DB error" });
-    }
-});
-
-router.post("/users/get", async (req, res) => {
-    try {
-        const { username, password } = req.body;
-
-        const [rows] = await pool.execute(
-            `SELECT username, password_hash, steam_url
-            FROM users
-            WHERE username = ?`,
-            [username]
-        );
-
-        const storedHash = rows[0].password_hash;
-        const steam_url = rows[0].steam_url;
-
-        const checkedPassword = await checkPassword(password, storedHash)
-
-        if (!checkedPassword) {
-            return res.json(false);
-        } else {
-            return res.json({ checkedPassword, steam_url });
-        }
-    } catch (err) {
-        return res.json(false);
-    }
-});
-
-async function hashPassword(password) {
-    const hash = await bcrypt.hash(password, saltRounds);
-    return hash;
-}
-
-async function checkPassword(enteredPassword, storedHash) {
-    return await bcrypt.compare(enteredPassword, storedHash);
-}
 
 export default router;

@@ -18,7 +18,7 @@ export function initSteamInfo(deps) {
                 (Array.isArray(data?.assets) && Array.isArray(data?.descriptions) && data?.ok !== false)));
     }
 
-    async function fetchSteamId(steamid) {
+    async function fetchSteamId(steamid, { isOwn = false } = {}) {
         const profileContainer = document.getElementById("multipleProfileButtons");
         let data;
         try {
@@ -43,9 +43,11 @@ export function initSteamInfo(deps) {
         containers.push(containerPerSteamAccount);
         mainContainer.append(containerPerSteamAccount);
 
-        name.textContent = data.name || `Steam ${steamid}`;
-        containerPerSteamAccount.dataset.playerName = name.textContent;
-        if (data.avatar) img.src = data.avatar;
+        const playerName = data.name || `Steam ${steamid}`;
+        name.textContent = isOwn ? `${playerName} (You)` : playerName;
+        containerPerSteamAccount.dataset.playerName = playerName;
+        img.src = data.avatar || "/shared/avatar.svg";
+        img.addEventListener("error", () => { if (!img.src.endsWith("/shared/avatar.svg")) img.src = "/shared/avatar.svg"; });
         img.alt = "";
         btn.append(img, name);
 

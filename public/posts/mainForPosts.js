@@ -4,6 +4,8 @@ import { initSorting } from "./sorting.js";
 import { initSteamInfo } from "./steamInfo.js";
 import { startFaceitWatcher } from "./faceitWatcher.js";
 import { resetForNewMatch } from "./resetData.js";
+import { accountReady, resolveLinkedProfile } from "../shared/account.js";
+import { buildInventoryRoster } from "./inventoryRoster.js";
 
 async function loadfiles(link) {
     try {
@@ -42,7 +44,11 @@ async function main() {
     //Declared globally variables
     const sleep = (ms) => new Promise((r) => setTimeout(r, ms)); // This is for making an await sleep
     const arrayAssets = []; // Array for avoiding dublications of items
-    let steamIds = [];
+    let matchSteamIds = [];
+    let ownSteamId = null;
+    let renderVersion = 0;
+    let renderQueue = Promise.resolve();
+    let rosterKey = null;
 
     const state = {
         heighestPrice: 0,
@@ -149,12 +155,14 @@ async function main() {
     });
 
 
-    startFaceitWatcher({
-        sleep,
-        pollMs: 2000,
-        onNewSteamIds: async ({ steamIds: ids }) => {
-            steamIds = ids || [];
-
+    function updateRoster() {
+        const ids = buildInventoryRoster(ownSteamId, matchSteamIds);
+        const key = JSON.stringify(ids);
+        if (key === rosterKey) return renderQueue;
+        rosterKey = key;
+        const version = ++renderVersion;
+        renderQueue = renderQueue.catch(err => console.warn("Inventory loading failed:", err)).then(async () => {
+            if (version !== renderVersion) return;
             resetForNewMatch({
                 profileContainer: document.getElementById("multipleProfileButtons"),
                 normalPostContainer,
@@ -166,22 +174,51 @@ async function main() {
                 displayVisibleOrHidden,
             });
 
-            await runAndStream();
+            await runAndStream(ids, version);
+        });
+        return renderQueue;
+    }
+
+    let accountVersion = 0;
+    async function loadOwnInventory(user) {
+        const version = ++accountVersion;
+        let linkedSteamId = null;
+        try {
+            const profile = await resolveLinkedProfile(user);
+            if (version !== accountVersion) return;
+            linkedSteamId = profile?.steamid || null;
+        } catch (err) { console.warn("Could not load your linked Steam profile:", err.message); }
+        if (version === accountVersion) {
+            ownSteamId = linkedSteamId;
+            await updateRoster();
+        }
+    }
+    accountReady.then(loadOwnInventory).catch(err => console.warn(err.message));
+    window.addEventListener("skinscope:account", event => { void loadOwnInventory(event.detail); });
+
+    startFaceitWatcher({
+        sleep,
+        pollMs: 2000,
+        onNewSteamIds: async ({ steamIds: ids }) => {
+            matchSteamIds = ids || [];
+            await updateRoster();
         },
     });
 
 
-    async function runAndStream() {
+    async function runAndStream(steamIds, version) {
         console.log("Starting all tasks...\n");
 
         for (let i = 0; i < steamIds.length; i++) {
+            if (version !== renderVersion) return;
             const steamid = steamIds[i];
 
             // Start the async work
             if (i > 0 && !hasCachedPlayer(steamid)) await sleep(900);
             const [steamdata, ContainerPerSteamAccount] = await Promise.all([
-                loadInSteamData(steamid), fetchSteamId(steamid)
+                loadInSteamData(steamid), fetchSteamId(steamid, { isOwn: steamid === ownSteamId })
             ]);
+            if (version !== renderVersion) return;
 
             const promise = loadMoreItems(steamdata, ContainerPerSteamAccount, {
                 arrayAssets,
