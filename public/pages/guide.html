@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="/assets/scripts/shared/theme.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Learn how to explore CS2 inventories, compare Steam prices, and filter skins by float in SkinScope.">
+    <link rel="stylesheet" href="/assets/styles/site.css">
+    <link rel="stylesheet" href="/assets/styles/pages/guide.css">
+    <title>Guide | SkinScope</title>
+    <script type="module" src="/assets/scripts/shared/account.js"></script>
+    <link rel="stylesheet" href="/assets/styles/theme.css">
+    <link rel="icon" href="/assets/images/favicon.svg" type="image/svg+xml">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <nav class="nav-list" aria-label="Main navigation">
+                <h1 class="brand">SkinScope</h1>
+                <ul class="nav-center">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/pages/posts.html">Posts</a></li>
+                    <li><a id="active" aria-current="page" href="/pages/guide.html">Guide</a></li>
+                    <li><a href="/pages/contact.html">Contact</a></li>
+                </ul>
+                <a class="login-link" href="/pages/login.html">Login</a>
+            </nav>
+        </header>
+        <main class="main guide">
+            <div class="guide-intro">
+                <p class="eyebrow">THE SKINSCOPE GUIDE</p>
+                <h2>Know what you’re looking at.</h2>
+                <p>Explore the inventories in your FACEIT match, find a skin, and compare its price and wear. Here’s how it all works.</p>
+                <a class="guide-cta" href="/pages/posts.html">Explore inventories &rarr;</a>
+            </div>
+            <nav class="guide-topics" aria-label="Guide topics">
+                <a href="#getting-started">Getting started</a>
+                <a href="#item-cards">Item cards</a>
+                <a href="#float">Float &amp; wear</a>
+                <a href="#filters">Filters &amp; sorting</a>
+                <a href="#prices">Prices</a>
+                <a href="#refreshing">Refreshing &amp; errors</a>
+                <a href="#support">Help &amp; bug reports</a>
+            </nav>
+            <section id="getting-started" class="guide-card">
+                <span class="section-number">01 / GETTING STARTED</span>
+                <h3>Your match, in one place.</h3>
+                <p>Open <strong>Posts</strong>. When the connected FACEIT match source reports a match, SkinScope loads its players and their accessible CS2 inventories. A new match replaces the player list.</p>
+                <p>Click a player in the sidebar to view their items. Choose <strong>Main Menu</strong> to return to the combined view. Matching item classes are shown once in the combined inventory.</p>
+                <p>A private inventory cannot be viewed. You’ll see a private-inventory message when selecting that player.</p>
+            </section>
+            <section id="item-cards" class="guide-card">
+                <span class="section-number">02 / ITEM CARDS</span>
+                <h3>Reading a skin.</h3>
+                <dl>
+                    <dt>Name &amp; finish</dt><dd>The weapon or item and its skin, such as AK-47 Redline.</dd>
+                    <dt>Condition</dt><dd>The wear category, such as Field-Tested. Some items, including cases and agents, have no wear condition.</dd>
+                    <dt>Float</dt><dd>A more precise wear value. Items without one show “Float unavailable.”</dd>
+                    <dt>Market value</dt><dd>A cached EUR lowest-listing price fetched from Steam. It is not a guaranteed sale price.</dd>
+                </dl>
+                <p>Default gun finishes, standard T/CT knives, default Zeus x27 and C4 are hidden. Skins and special vanilla knives, such as a vanilla Karambit, are kept.</p>
+            </section>
+            <section id="float" class="guide-card">
+                <span class="section-number">03 / FLOAT &amp; WEAR</span>
+                <h3>Lower float means less wear.</h3>
+                <p>Float is a number between <strong>0 and 1</strong>. Lower values generally look cleaner; higher values generally look more worn. Each finish has its own possible float range, and appearance varies by skin.</p>
+                <div class="table-wrap">
+                    <table>
+                        <caption>CS2 wear categories</caption>
+                        <thead><tr><th scope="col">Condition</th><th scope="col">Float range</th></tr></thead>
+                        <tbody>
+                            <tr><td>Factory New</td><td>0 to below 0.07</td></tr>
+                            <tr><td>Minimal Wear</td><td>0.07 to below 0.15</td></tr>
+                            <tr><td>Field-Tested</td><td>0.15 to below 0.38</td></tr>
+                            <tr><td>Well-Worn</td><td>0.38 to below 0.45</td></tr>
+                            <tr><td>Battle-Scarred</td><td>0.45 to 1</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p>Cases and agents do not have a skin float. They appear last when sorting by either Highest Float or Lowest Float, and are excluded when a float range is active.</p>
+            </section>
+            <section id="filters" class="guide-card">
+                <span class="section-number">04 / FILTERS &amp; SORTING</span>
+                <h3>Find the items you care about.</h3>
+                <dl>
+                    <dt>Search</dt><dd>Matches the beginning of the displayed item name, ignoring letter case. Try “AK” or “Karambit.”</dd>
+                    <dt>High / Low</dt><dd>The maximum and minimum market price in EUR. Leave a field empty for an open-ended price range.</dd>
+                    <dt>High Float / Low Float</dt><dd>The maximum and minimum float. For example, Low Float 0 and High Float 0.07 includes floats from 0 through 0.07, including the boundary.</dd>
+                    <dt>Highest / Lowest</dt><dd>Use the dropdown to sort by price or float in either direction. Items without the chosen value appear last.</dd>
+                </dl>
+                <p>Search, price and float filters work together for the selected player or combined view. Clear the fields to remove a range or search. Items without a known price cannot match a price range.</p>
+            </section>
+            <section id="prices" class="guide-card">
+                <span class="section-number">05 / PRICES</span>
+                <h3>Saved prices. A clear freshness limit.</h3>
+                <p>SkinScope fetches the lowest current EUR listing from Steam and saves it with the fetch time. A saved price is displayed only while it is <strong>less than 24 hours old</strong>. Hover over the price to see when it was fetched.</p>
+                <p>Recently viewed items are queued for refresh after 20 hours while the server is running. If a refresh fails, the previous price can remain visible until it expires. An expired price is hidden.</p>
+                <p>Market value is a reference: floats, patterns, stickers and other details can affect an individual item’s value. It is not a cash-market valuation or a prediction of what you’ll receive after fees.</p>
+            </section>
+            <section id="refreshing" class="guide-card">
+                <span class="section-number">06 / REFRESHING &amp; ERRORS</span>
+                <h3>What the loading messages mean.</h3>
+                <dl>
+                    <dt>Loading / fetching</dt><dd>A price is being requested or is waiting in the shared queue. New items can take longer than items with saved prices.</dd>
+                    <dt>Steam cooldown</dt><dd>A failed request has paused price lookups. This can follow rate limits or another request failure. Valid saved prices still display.</dd>
+                    <dt>Unavailable</dt><dd>There is no valid price to display, the item has no current listing, or a service cannot be reached. It does not mean the item is worth zero.</dd>
+                    <dt>Private inventory</dt><dd>The player’s inventory is not accessible. SkinScope cannot bypass their privacy settings.</dd>
+                </dl>
+                <p>Profiles and inventories are cached for up to 24 hours in the current browser tab. Refreshing reuses them, so inventory changes may not appear immediately. Closing the tab ends that session cache; server-side caches may still be reused.</p>
+                <p>The current match is checked separately. When it changes, the displayed players are replaced and valid cached data can be reused for players in both matches. Refreshing repeatedly does not clear a Steam cooldown.</p>
+            </section>
+            <section id="support" class="guide-card">
+                <span class="section-number">07 / HELP &amp; BUG REPORTS</span>
+                <h3>Something not working?</h3>
+                <p>Found a bug, an incorrect value, or something confusing? Visit <a href="/pages/contact.html">Contact</a> for help and feedback.</p>
+                <p>A useful bug report includes the page you were on, what you did, what you expected, and what actually happened. Include the affected item or player name and any error message. A screenshot can help explain the problem.</p>
+            </section>
+            <p class="guide-bottom">Ready to take a look? <a href="/pages/posts.html">Open Posts &rarr;</a></p>
+        </main>
+    </div>
+</body>
+</html>

@@ -1,0 +1,68 @@
+/* Keep the existing dark palette; light mode overrides shared and legacy surfaces. */
+.appearance-card { margin-top: 1.5rem; padding: 1.5rem 2rem; background: #101e32; border: 1px solid #ffffff18; border-radius: 14px; }
+.appearance-card h3 { margin: 0; font-size: 1.3rem; }
+.theme-choices { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.main:not(#mainContainer) .theme-choice { display: flex; flex-direction: column; gap: .65rem; align-items: stretch; text-align: left; padding: .8rem; margin: 0; border: 2px solid #ffffff20; border-radius: 9px; background: transparent; color: var(--site-text); }
+.main:not(#mainContainer) .theme-choice.selected { border-color: var(--site-accent); }
+.theme-preview { display: flex; gap: .45rem; height: 70px; padding: .6rem; border-radius: 5px; background: #091426; border: 1px solid #ffffff20; }
+.theme-preview i { width: 23%; border-radius: 3px; background: #243b59; }
+.theme-preview i:last-child { flex: 1; background: #14243c; border-top: 5px solid #e67735; }
+.theme-preview-light { background: #edf2f8; border-color: #c9d3e1; }
+.theme-preview-light i { background: #dce5f0; }
+.theme-preview-light i:last-child { background: white; }
+.main:not(#mainContainer) #themeStatus { min-height: 1.5em; font-size: .8rem; margin-bottom: 0; }
+
+:root[data-theme="light"] {
+    --site-bg: #f3f6fb; --site-bg-deep: #e8eef6;
+    --site-surface: #f5f7fa; --site-surface-soft: #e6edf6;
+    --site-text: #17283f; --site-muted: #4d6078;
+    --site-accent-bright: #aa3e0c;
+    --bg: #f3f6fb; --bg-deep: #e8eef6; --surface: #fff;
+    --surface-soft: #e6edf6; --surface-light: #dbe6f3;
+    --text: #17283f; --muted: #4d6078; --accent-bright: #aa3e0c;
+    --outline: #d8814b; --shadow: #243c5b12;
+}
+html[data-theme="light"], [data-theme="light"] body { background: linear-gradient(135deg, #f1f4f8, #e5ebf3); color: var(--site-text); }
+[data-theme="light"] .container { background: linear-gradient(90deg, #243c5b04 1px, transparent 1px), linear-gradient(#243c5b04 1px, transparent 1px); background-size: 48px 48px; }
+[data-theme="light"] .header { background: #f5f7faed; border-color: #cbd5e3; }
+[data-theme="light"] .header .brand { text-shadow: none; }
+[data-theme="light"] .header a { background: #e9eff7; color: #3e526e; border-color: #cbd5e3; }
+[data-theme="light"] .header a:hover { background: #fff0e5; border-color: #d3763b; color: #17283f; }
+[data-theme="light"] .header #active { background: #e67735; color: #17202d; border-color: #cd6325; box-shadow: 0 3px 12px #d76b2520; }
+[data-theme="light"] .header .account-avatar-button { background: #dce5f0; padding: 0; }
+[data-theme="light"] .account-online-dot { border-color: #f5f7fa; }
+[data-theme="light"] .introducing, [data-theme="light"] .howTo, [data-theme="light"] .infoSidebar,
+[data-theme="light"] .inputPersonalInformation, [data-theme="light"] .main:not(#mainContainer) > .field,
+[data-theme="light"] .guide-card, [data-theme="light"] .profile-card, [data-theme="light"] .appearance-card,
+[data-theme="light"] .auth-card { background: #f5f7faed; border-color: #cad5e3; box-shadow: 0 12px 30px #243c5b0d; }
+[data-theme="light"] #sidebar { background: linear-gradient(#edf2f9, #e3ebf5); border-color: #cbd5e3; box-shadow: 8px 0 24px #243c5b09; }
+[data-theme="light"] #sidebar button { background: #f5f7fa; color: #17283f; border-color: #c9d5e5; }
+[data-theme="light"] #sidebar button:hover { background: #fff0e5; border-color: #d3763b; }
+[data-theme="light"] textarea, [data-theme="light"] input:not([type="checkbox"]),
+[data-theme="light"] #sidebar textarea, [data-theme="light"] .main:not(#mainContainer) textarea,
+[data-theme="light"] .auth-field input, [data-theme="light"] .steam-profile-form input { background: #f8fafd; color: #17283f; border-color: #b8c7da; }
+[data-theme="light"] input::placeholder { color: #697b92; }
+[data-theme="light"] .post { background: linear-gradient(#f5f7fa, #eaf0f7); box-shadow: 0 7px 16px #243c5b0d; }
+[data-theme="light"] .post:hover { box-shadow: 0 10px 20px #243c5b20; }
+[data-theme="light"] .dropbtn, [data-theme="light"] .dropdown-content,
+[data-theme="light"] .inventory-message { background: #f5f7fa; color: #17283f; border-color: #c9d5e5; box-shadow: 0 8px 24px #243c5b12; }
+[data-theme="light"] .guide-topics a { background: #f5f7fa; border-color: #cad5e3; }
+[data-theme="light"] .guide th, [data-theme="light"] .guide td,
+[data-theme="light"] .profile-details, [data-theme="light"] .profile-details > div,
+[data-theme="light"] .main:not(#mainContainer) li { border-color: #d4ddea; }
+[data-theme="light"] .profile-cover { background: radial-gradient(ellipse at 85% 25%, #f4bc9260, transparent 65%), linear-gradient(100deg, #d0e1f5, #ecf1f8); }
+[data-theme="light"] .account-page .profile-card, [data-theme="light"] .account-page .appearance-card { background: #f5f7fa; }
+[data-theme="light"] .profile-picture { border-color: #f5f7fa; }
+[data-theme="light"] .profile-badge, [data-theme="light"] .account-label { color: #21693b; }
+[data-theme="light"] .auth-layout .auth-tabs { background: #e9eff7; border-color: #cad5e3; }
+[data-theme="light"] .main.auth-layout:not(#mainContainer) .auth-tabs button { color: #4d6078; }
+[data-theme="light"] .main.auth-layout:not(#mainContainer) .auth-tabs button.selected { background: #f5f7fa; color: #17283f; box-shadow: 0 2px 6px #243c5b15; }
+[data-theme="light"] .main.auth-layout:not(#mainContainer) .password-toggle { color: #4d6078; }
+[data-theme="light"] .account-details { background: #f0f4fa; border-color: #cad5e3; }
+[data-theme="light"] .auth-status { color: #21693b !important; }
+[data-theme="light"] .auth-status.is-error, [data-theme="light"] #profileStatus { color: #ad2525 !important; }
+[data-theme="light"] .main.account-page:not(#mainContainer) #profileLogout { background: #e9eff7; color: #3e526e; border-color: #cbd5e3; }
+[data-theme="light"] .main:not(#mainContainer) .theme-choice { color: #17283f; border-color: #c9d5e5; }
+[data-theme="light"] .main:not(#mainContainer) .theme-choice.selected { border-color: #c75c20; }
+[data-theme="light"] .container > .footer { background: #e2eaf4; border-color: #c4d0df; }
+@media (max-width: 500px) { .appearance-card { padding: 1.2rem; } .theme-choices { gap: .6rem; } }

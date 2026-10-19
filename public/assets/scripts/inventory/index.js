@@ -1,0 +1,267 @@
+import { loadMoreItems } from "./loadMoreItems.js";
+import { initHtmlButtons } from "./htmlButtons.js";
+import { initSorting } from "./sorting.js";
+import { initSteamInfo } from "./steamInfo.js";
+import { startFaceitWatcher } from "./faceitWatcher.js";
+import { resetForNewMatch } from "./resetData.js";
+import { accountReady, resolveLinkedProfile } from "../shared/account.js";
+import { buildInventoryRoster } from "./inventoryRoster.js";
+
+async function loadfiles(link) {
+    try {
+        const response = await fetch(link);
+        const text = await response.text();
+        let data;
+
+        try {
+            data = JSON.parse(text);
+        } catch {
+            data = {
+                error: text || response.statusText || "Could not load inventory data"
+            };
+        }
+
+        if (!response.ok) {
+            return {
+                ...data,
+                ok: false,
+                status: response.status
+            };
+        }
+        return data;
+    } catch (err) {
+        console.error("Error loading file:", err);
+        return {
+            ok: false,
+            status: 0,
+            error: "Could not load inventory data"
+        };
+    }
+}
+
+
+async function main() {
+    //Declared globally variables
+    const sleep = (ms) => new Promise((r) => setTimeout(r, ms)); // This is for making an await sleep
+    const arrayAssets = []; // Array for avoiding dublications of items
+    let matchSteamIds = [];
+    let ownSteamId = null;
+    let renderVersion = 0;
+    let renderQueue = Promise.resolve();
+    let rosterKey = null;
+
+    const state = {
+        heighestPrice: 0,
+        minimunPrice: 0,
+        followPriceRange: false,
+        highestFloat: "",
+        lowestFloat: "",
+        followFloatRange: false,
+        sortMetric: "price",
+        lowToHigh: false,
+        highToLow: false,
+        showSpecifiedPlayerInv: false,
+        indexPlayerInv: 0,
+        searchItem: false,
+        searchItemName: "",
+        lastShown: null
+    };
+
+
+    //Containers
+    const containers = [];
+    const mainContainer = document.getElementById("mainContainer");
+    const steamProfileButtonAll = document.getElementById("multipleProfileButtons")
+
+    const normalPostContainer = document.getElementById("posts");
+    const itemSortContainer = document.getElementById("sortedPosts");
+    const itemUserDecidePriceContainer = document.getElementById("sortedPosts");
+
+    state.lastShown = normalPostContainer;
+
+    //ElementbyIds
+    const sortItemsByHighPriceToLow = document.getElementById("sortItemsByHighPriceToLowBtn");
+    const sortItemsByLowPriceToHigh = document.getElementById("sortItemsByLowPriceToHighBtn");
+    const sortItemsByHighFloatToLow = document.getElementById("sortItemsByHighFloatToLowBtn");
+    const sortItemsByLowFloatToHigh = document.getElementById("sortItemsByLowFloatToHighBtn");
+    const floatRangeForm = document.getElementById("FloatToFloat");
+    const switchToMain = document.getElementById("switchToMain");
+    const priceHighTextArea = document.getElementById("PriceToPrice");
+    const searchForSkins = document.getElementById("SearchForSkinsTextArea");
+
+    //Css changes
+    itemSortContainer.style.display = "none";
+    itemUserDecidePriceContainer.style.display = "none";
+
+
+    const { loadInSteamData, fetchSteamId, hasCachedPlayer } = initSteamInfo({
+        sleep,
+        loadfiles,
+        containers,
+        mainContainer
+    });
+
+
+    const { sortOutLowAndHighPrices, sortItemsByHighPriceToLowFunction, searchItemsByName } = initSorting({
+        state,
+        normalPostContainer,
+        itemUserDecidePriceContainer,
+        displayVisibleOrHidden
+    });
+
+
+    initHtmlButtons({
+        steamProfileButtonAll,
+        sortItemsByHighPriceToLow,
+        sortItemsByLowPriceToHigh,
+        sortItemsByHighFloatToLow,
+        sortItemsByLowFloatToHigh,
+        floatRangeForm,
+        searchForSkins,
+        switchToMain,
+        priceHighTextArea,
+        containers,
+        normalPostContainer,
+        itemUserDecidePriceContainer,
+        sortItemsByHighPriceToLowFunction,
+        sortOutLowAndHighPrices,
+        displayVisibleOrHidden,
+        searchItemsByName,
+        state
+    });
+
+
+    function displayVisibleOrHidden(show) {
+        if (!show) return;
+
+        if (state.lastShown && state.lastShown !== show) {
+            state.lastShown.style.display = "none";
+        }
+
+        show.style.display = "grid";
+        state.lastShown = show;
+    }
+
+
+    resetForNewMatch({
+        profileContainer: document.getElementById("multipleProfileButtons"),
+        normalPostContainer,
+        itemSortContainer,
+        itemUserDecidePriceContainer,
+        containers,
+        arrayAssets,
+        state,
+        displayVisibleOrHidden,
+    });
+
+
+    function updateRoster() {
+        const ids = buildInventoryRoster(ownSteamId, matchSteamIds);
+        const key = JSON.stringify(ids);
+        if (key === rosterKey) return renderQueue;
+        rosterKey = key;
+        const version = ++renderVersion;
+        renderQueue = renderQueue.catch(err => console.warn("Inventory loading failed:", err)).then(async () => {
+            if (version !== renderVersion) return;
+            resetForNewMatch({
+                profileContainer: document.getElementById("multipleProfileButtons"),
+                normalPostContainer,
+                itemSortContainer,
+                itemUserDecidePriceContainer,
+                containers,
+                arrayAssets,
+                state,
+                displayVisibleOrHidden,
+            });
+
+            await runAndStream(ids, version);
+        });
+        return renderQueue;
+    }
+
+    let accountVersion = 0;
+    async function loadOwnInventory(user) {
+        const version = ++accountVersion;
+        let linkedSteamId = null;
+        try {
+            const profile = await resolveLinkedProfile(user);
+            if (version !== accountVersion) return;
+            linkedSteamId = profile?.steamid || null;
+        } catch (err) { console.warn("Could not load your linked Steam profile:", err.message); }
+        if (version === accountVersion) {
+            ownSteamId = linkedSteamId;
+            await updateRoster();
+        }
+    }
+    accountReady.then(loadOwnInventory).catch(err => console.warn(err.message));
+    window.addEventListener("skinscope:account", event => { void loadOwnInventory(event.detail); });
+
+    startFaceitWatcher({
+        sleep,
+        pollMs: 2000,
+        onNewSteamIds: async ({ steamIds: ids }) => {
+            matchSteamIds = ids || [];
+            await updateRoster();
+        },
+    });
+
+
+    async function runAndStream(steamIds, version) {
+        console.log("Starting all tasks...\n");
+
+        for (let i = 0; i < steamIds.length; i++) {
+            if (version !== renderVersion) return;
+            const steamid = steamIds[i];
+
+            // Start the async work
+            if (i > 0 && !hasCachedPlayer(steamid)) await sleep(900);
+            const [steamdata, ContainerPerSteamAccount] = await Promise.all([
+                loadInSteamData(steamid), fetchSteamId(steamid, { isOwn: steamid === ownSteamId })
+            ]);
+            if (version !== renderVersion) return;
+
+            const promise = loadMoreItems(steamdata, ContainerPerSteamAccount, {
+                arrayAssets,
+                normalPostContainer,
+                mainContainer,
+                steamid
+            });
+
+            // Attach a handler for WHEN it finishes
+            promise.then(result => {
+                if (result !== undefined) console.log("STREAM:", result);
+            });
+
+        }
+        console.log("\nAll tasks have been started (but not finished yet)");
+    }
+
+    const dropdown = document.getElementById("sortDropdown");
+    const mainBtn = dropdown.querySelector(".dropbtn");
+    const label = dropdown.querySelector(".label");
+    const options = dropdown.querySelectorAll(".dropdown-content button");
+
+    // toggle open/close
+    mainBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        dropdown.classList.toggle("open");
+    });
+
+    // when picking an option, rename the main button + close
+    options.forEach(btn => {
+        btn.addEventListener("click", () => {
+            label.textContent = btn.textContent;
+            dropdown.classList.remove("open");
+        });
+    });
+
+    // click outside closes
+    document.addEventListener("click", () => dropdown.classList.remove("open"));
+
+    // esc closes
+    document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") dropdown.classList.remove("open");
+    });
+}
+
+main();
