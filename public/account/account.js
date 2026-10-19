@@ -1,6 +1,65 @@
 import { accountReady, safeSteamUrl, signOut, setCurrentUser, resolveLinkedProfile } from "../shared/account.js";
+import { steamSessionCache } from "../posts/sessionCache.js";
+
+let backgroundVersion = 0;
+async function updateBackground(user) {
+    const version = ++backgroundVersion;
+    const cover = document.querySelector(".account-backdrop");
+    cover.replaceChildren();
+    cover.classList.remove("has-steam-background");
+    cover.removeAttribute("title");
+    if (!user?.steam_url) return;
+    try {
+        const profile = await resolveLinkedProfile(user);
+        if (!profile?.steamid || version !== backgroundVersion) return;
+        const data = await steamSessionCache.load(`steam-background:v1:${profile.steamid}`, 3600000, async () => {
+            const response = await fetch(`/steam/background?steamid=${profile.steamid}`);
+            if (!response.ok) throw new Error("Background unavailable");
+            return response.json();
+        });
+        if (version !== backgroundVersion || !data.background) return;
+        const background = data.background;
+        const valid = value => typeof value === "string" && value.startsWith("https://shared.fastly.steamstatic.com/community_assets/images/items/");
+        const image = valid(background.image) ? background.image : null;
+        const videos = [background.webm, background.mp4].filter(valid);
+        const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        function showImage() {
+            if (version !== backgroundVersion) return;
+            cover.replaceChildren();
+            if (!image) { cover.classList.remove("has-steam-background"); return; }
+            const img = document.createElement("img");
+            img.src = image;
+            img.alt = "";
+            img.addEventListener("error", () => { if (version === backgroundVersion) { cover.replaceChildren(); cover.classList.remove("has-steam-background"); } });
+            cover.append(img);
+        }
+        if (videos.length && !reducedMotion) {
+            const video = document.createElement("video");
+            video.muted = true;
+            video.autoplay = true;
+            video.loop = true;
+            video.playsInline = true;
+            video.setAttribute("aria-hidden", "true");
+            video.preload = "metadata";
+            if (image) video.poster = image;
+            for (const url of videos) {
+                const source = document.createElement("source");
+                source.src = url;
+                source.type = url.endsWith(".webm") ? "video/webm" : "video/mp4";
+                video.append(source);
+            }
+            video.addEventListener("error", showImage);
+            cover.append(video);
+        } else showImage();
+        if (cover.childElementCount) {
+            cover.classList.add("has-steam-background");
+            cover.title = background.title || "Steam profile background";
+        }
+    } catch { /* Keep the gradient when Steam is unavailable or no background is equipped. */ }
+}
 
 function render(user) {
+    void updateBackground(user);
     document.getElementById("accountLoading").hidden = true;
     document.getElementById("signedOut").hidden = Boolean(user);
     document.getElementById("profileContent").hidden = !user;

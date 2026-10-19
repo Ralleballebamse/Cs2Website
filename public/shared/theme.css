@@ -51,6 +51,7 @@ html[data-theme="light"], [data-theme="light"] body { background: linear-gradien
 [data-theme="light"] .profile-details, [data-theme="light"] .profile-details > div,
 [data-theme="light"] .main:not(#mainContainer) li { border-color: #d4ddea; }
 [data-theme="light"] .profile-cover { background: radial-gradient(ellipse at 85% 25%, #f4bc9260, transparent 65%), linear-gradient(100deg, #d0e1f5, #ecf1f8); }
+[data-theme="light"] .account-page .profile-card, [data-theme="light"] .account-page .appearance-card { background: #f5f7fa; }
 [data-theme="light"] .profile-picture { border-color: #f5f7fa; }
 [data-theme="light"] .profile-badge, [data-theme="light"] .account-label { color: #21693b; }
 [data-theme="light"] .auth-layout .auth-tabs { background: #e9eff7; border-color: #cad5e3; }

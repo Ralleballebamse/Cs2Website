@@ -1,9 +1,18 @@
 body { margin: 0; }
+.account-backdrop { position: fixed; inset: 74px 0 0; pointer-events: none; overflow: hidden; }
+.account-backdrop > img, .account-backdrop > video { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center top; }
+.account-backdrop.has-steam-background::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to bottom, #07101f10 30%, #07101fcc 90%), linear-gradient(to right, #07101f10, #07101f45 35%, #07101f45 65%, #07101f10); }
+body > .container { position: relative; }
+.account-page { position: relative; }
+.account-page > .account-eyebrow, .account-page > h2, .account-page > .account-intro { text-shadow: 0 2px 14px var(--site-bg); }
+[data-theme="light"] .account-backdrop { opacity: 1; }
+[data-theme="light"] .account-backdrop.has-steam-background::after { background: linear-gradient(to bottom, #07101f08, #07101f30), linear-gradient(to right, transparent, #e8eef6b3 30%, #e8eef6b3 70%, transparent); }
 .main.account-page:not(#mainContainer) { max-width: 940px; padding: 3rem 1.5rem 4rem; }
 .account-page .account-eyebrow { color: var(--site-accent-bright); font-size: .75rem; letter-spacing: .16em; font-weight: 800; }
 .account-intro { margin-bottom: 2rem; }
 .profile-card { border: 1px solid #ffffff18; border-radius: 14px; overflow: hidden; background: #101e32; box-shadow: 0 18px 50px #0004; }
 .profile-cover { height: 140px; background: radial-gradient(ellipse at 80% 40%, #e6773545, transparent 65%), repeating-linear-gradient(120deg, transparent 0 40px, #ffffff04 40px 41px), linear-gradient(100deg, #203d61, #14243c); border-bottom: 1px solid #e6773530; }
+.profile-cover { position: relative; overflow: hidden; }
 .profile-body { padding: 0 2rem 2rem; }
 .profile-picture { display: block; width: 100px; height: 100px; object-fit: cover; border: 5px solid #101e32; border-radius: 50%; margin-top: -50px; position: relative; background: #1d304c; }
 .profile-badge { display: inline-block; margin-top: .8rem; color: #9be6b8; font-size: .7rem; font-weight: 800; letter-spacing: .1em; }
@@ -29,3 +38,4 @@ body { margin: 0; }
 .steam-profile-form input:focus { outline: 2px solid var(--site-accent); outline-offset: 2px; }
 a:focus-visible, button:focus-visible { outline: 2px solid var(--site-accent-bright); outline-offset: 3px; }
 @media (max-width: 600px) { .profile-body { padding-inline: 1.2rem; } .profile-details > div { grid-template-columns: 1fr; gap: .5rem; } .profile-footer { align-items: start; flex-direction: column; } }
+@media (max-width: 900px) { .account-backdrop { inset-block-start: 130px; opacity: .3; } }

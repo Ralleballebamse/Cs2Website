@@ -30,6 +30,16 @@ Only item names actually viewed through the site are enrolled for refresh.
 Optional database configuration: DB_HOST, DB_USER, DB_PASSWORD, DB_NAME.
 Run tests with node --test tests/marketPrices.test.js.
 
+## Steam profile backgrounds
+
+The account page uses the linked profile's equipped background from Steam's
+IPlayerService/GetProfileItemsEquipped endpoint. Images and muted looping videos
+are supported as a backdrop visible around the centered account content.
+The avatar banner keeps its gradient. Reduced-motion preferences use the
+still image instead. The gradient remains when there is no equipped background
+or media cannot load. Background lookups are separate from inventory/profile
+lookups and cached for one hour on the server and in browser session storage.
+
 ## Browser session cache
 
 Steam profiles and inventories (24 hours, including private results),
