@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script src="/shared/theme.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Your SkinScope account and Steam profile details.">
@@ -8,6 +9,7 @@
     <link rel="stylesheet" href="/account/account.css">
     <script type="module" src="/account/account.js"></script>
     <title>Your account | SkinScope</title>
+    <link rel="stylesheet" href="/shared/theme.css">
 </head>
 <body>
     <div class="container">
@@ -54,6 +56,15 @@
                         </form>
                         <p class="profile-note">Your Steam profile link is saved to your account. It does not verify Steam account ownership.</p>
                     </div>
+                </section>
+                <section class="appearance-card" aria-labelledby="appearanceTitle">
+                    <h3 id="appearanceTitle">Appearance</h3>
+                    <p>Choose how SkinScope looks. This preference is saved in your browser.</p>
+                    <div class="theme-choices" role="group" aria-label="Color theme">
+                        <button type="button" class="theme-choice" data-theme-choice="dark" aria-pressed="true"><span class="theme-preview" aria-hidden="true"><i></i><i></i></span><span>Dark mode</span></button>
+                        <button type="button" class="theme-choice" data-theme-choice="light" aria-pressed="false"><span class="theme-preview theme-preview-light" aria-hidden="true"><i></i><i></i></span><span>Light mode</span></button>
+                    </div>
+                    <p id="themeStatus" role="status" aria-live="polite"></p>
                 </section>
                 <section class="profile-footer" aria-label="Account actions">
                     <div><h3>Back to your match</h3><p>Explore player inventories and compare their skins.</p><a href="posts.html" class="profile-action">Explore inventories &rarr;</a></div>

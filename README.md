@@ -80,3 +80,12 @@ Restart npm run dev after updating to load the new routes. The old demo
 /api/mysql/users/get and /api/mysql/users/set routes have been removed.
 
 Run all tests with node --test tests/*.test.js.
+
+## Appearance
+
+Account details includes Dark mode and Light mode under Appearance. The existing
+dark palette is the default. The selection applies immediately and is stored
+in localStorage for this browser, including across page reloads and tabs. It is
+not synced between devices. All six pages load the preference before rendering
+their styles to avoid a flash of the wrong theme. If browser storage is blocked,
+the selection still applies to the current page.
