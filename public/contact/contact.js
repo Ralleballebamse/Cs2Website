@@ -1,81 +1,46 @@
-const username  = document.getElementById("username");
-const email     = document.getElementById("email");
-const agree     = document.getElementById("agree");
-const submitBtn = document.getElementById("submitBtn");
-const keyup = document.getElementById("keyup");
+const form = document.getElementById("contactForm");
+const username = document.getElementById("username");
+const email = document.getElementById("email");
+const message = document.getElementById("keyup");
+const agree = document.getElementById("agree");
+const submit = document.getElementById("submitBtn");
+const count = document.getElementById("messageCount");
 
-const nameErr = document.createElement("p");
-nameErr.textContent = "Name cannot contain numbers.";
-nameErr.style.display = "none";
-username.after(nameErr);
+for (const field of [username, email, message]) {
+    const error = document.createElement("p");
+    error.id = `${field.id}Error`;
+    error.className = "field-error";
+    error.hidden = true;
+    field.closest(".contact-field").append(error);
+    field.setAttribute("aria-describedby", `${field.getAttribute("aria-describedby") || ""} ${error.id}`.trim());
+    field.addEventListener("input", () => showError(field, ""));
+}
 
-const emailErr = document.createElement("p");
-emailErr.textContent = "Email must contain '.' and '@'.";
-emailErr.style.display = "none";
-email.after(emailErr);
+function showError(field, text) {
+    const error = document.getElementById(`${field.id}Error`);
+    error.textContent = text;
+    error.hidden = !text;
+    field.classList.toggle("is-invalid", Boolean(text));
+    field.setAttribute("aria-invalid", String(Boolean(text)));
+}
 
-const checkedErr = document.createElement("p");
-checkedErr.textContent = "You must agree the checkbox before sending.";
-checkedErr.style.display = "none";
-agree.after(checkedErr);
+agree.addEventListener("change", () => { submit.disabled = !agree.checked; });
+message.addEventListener("input", () => { count.textContent = `${message.value.length} / 2000`; });
+form.addEventListener("submit", event => {
+    event.preventDefault();
+    if (!agree.checked) { agree.focus(); return; }
+    const errors = [
+        [username, username.value.trim() ? "" : "Enter your name or username."],
+        [email, email.value.trim() && email.validity.valid ? "" : "Enter a valid email address."],
+        [message, message.value.trim() ? "" : "Tell us a little about your question or issue."],
+    ];
+    for (const [field, text] of errors) showError(field, text);
+    const invalid = errors.find(([, text]) => text);
+    if (invalid) { invalid[0].focus(); return; }
 
-agree.addEventListener("change", () => {
-    submitBtn.disabled = !agree.checked;
-});
-
-keyup.after(nameErr);
-keyup.addEventListener("keyup", () => {
-    invalidNames  = hasDigits(keyup.value);
-    if(invalidNames){
-        nameErr.style.display = "block";
-        keyup.classList.add("is-invalid");
-    }else{
-        nameErr.style.display = "none";
-        keyup.classList.remove("is-invalid");
-    }
-});
-
-const hasDigits = str => /\d/.test(str);
-
-submitBtn.addEventListener("click", (e) => {
-    e.preventDefault();
-
-    const name = username.value.trim();
-    const mail = email.value.trim();
-
-    const invalidName  = hasDigits(name);
-    const invalidEmail = !(mail.includes("@") && mail.includes("."));
-    const unchecked = !agree.checked;
-
-    let hasError = false;
-
-    nameErr.style.display  = "none";
-    emailErr.style.display = "none";
-    checkedErr.style.display = "none";
-
-    username.classList.remove("is-invalid");
-    email.classList.remove("is-invalid");
-    checkedErr.classList.remove("is-invalid");
-
-    if (invalidName) {
-        nameErr.style.display = "block";
-        username.classList.add("is-invalid");
-        hasError = true;
-    }
-
-    if (invalidEmail) {
-        emailErr.style.display = "block";
-        email.classList.add("is-invalid");
-        hasError = true;
-    }
-
-    if (unchecked){
-        hasError = true
-    }
-    if (!hasError) {
-        alert("Sent!");
-        username.value = "";
-        email.value = "";
-        agree.checked = false;
-    }
+    // Preserve the existing submission behavior; message delivery is configured separately.
+    alert("Sent!");
+    form.reset();
+    submit.disabled = true;
+    count.textContent = "0 / 2000";
 });

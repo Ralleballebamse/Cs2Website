@@ -4,14 +4,14 @@
     <script src="/shared/theme.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="A better twitter">
-    <link rel="canonical" href="/index.html">
-    <link rel="stylesheet" href="contact/contact.css">
+    <meta name="description" content="Contact SkinScope to report a bug, share an idea, or ask a question.">
+    <link rel="canonical" href="/contact.html">
     <link rel="stylesheet" href="/shared/site.css">
     <link rel="shortcut icon" href="/favicon.ico">
     <script src="contact/contact.js" defer></script>
-    <title>SkinScope</title>
+    <title>Contact | SkinScope</title>
     <script type="module" src="/shared/account.js"></script>
+    <link rel="stylesheet" href="/contact/contact.css">
     <link rel="stylesheet" href="/shared/theme.css">
 </head>
 
@@ -32,39 +32,37 @@
         </header>
 
 
-        <main class = "main">
-            <h2>Contact form</h2>
-            <p>Found a bug or something not working? Include the page, steps to reproduce it, what you expected, and any error message.</p>
-            <h5>Type in your username, email and then confirm your</h5>
-            <h5>information by clicking in the checkbox and hit send.</h5>
-            <section class = "inputPersonalInformation">
-
-                <form id="contactForm" novalidate>
-                        <div class = "field">
-                        <label for="username">Input username</label>
-                        <textarea name="usernameDetails" id="username" rows="1" maxlength="280"></textarea>
+        <main class="main contact-page">
+            <div class="contact-layout">
+                <div class="contact-intro">
+                    <p class="contact-eyebrow">LET’S TALK SKINSCOPE</p>
+                    <h2>A question?<br><span>An idea?</span></h2>
+                    <p>Found something that doesn’t work, or thought of a way to make SkinScope better? Tell us about it.</p>
+                    <div class="contact-topics">
+                        <div class="contact-topic"><span aria-hidden="true">01</span><div><strong>Report a bug</strong><small>Tell us what happened and how to reproduce it.</small></div></div>
+                        <div class="contact-topic"><span aria-hidden="true">02</span><div><strong>Share an idea</strong><small>Suggest a feature or improvement you’d like to see.</small></div></div>
+                        <div class="contact-topic"><span aria-hidden="true">03</span><div><strong>Ask a question</strong><small>Need a hand with something? Give us the details.</small></div></div>
                     </div>
-
-                    <div class = "field">
-                        <label for="email">Input email</label>
-                        <textarea name="emailDetails" id="email" rows="1" maxlength="280"></textarea>
-                    </div>
-
-                    <div class = "field">
-                        <label for="email">Input email</label>
-                        <textarea name="keyup" id="keyup" rows="1" maxlength="280"></textarea>
-                    </div>
-
-                    <div class = "checkbox">
-                        <label for ="agree">Confirm to send</label>
-                        <input type="checkbox" id="agree">
-                    </div>
-
-                    <div class ="sendButton">
-                        <button type="button" id="submitBtn" disabled>Send</button>
-                    </div>
-            </form>
-            </section>
+                    <div class="contact-help">Looking for a quick answer? <a href="guide.html">Read the Guide &rarr;</a></div>
+                </div>
+                <section class="contact-card" aria-labelledby="contactTitle">
+                    <h3 id="contactTitle">Send a message</h3>
+                    <p>Fill in your details and let us know what’s on your mind.</p>
+                    <form id="contactForm" novalidate>
+                        <div class="contact-row">
+                            <div class="contact-field"><label for="username">Name or username</label><input name="usernameDetails" id="username" autocomplete="name" maxlength="80" placeholder="What should we call you?" required></div>
+                            <div class="contact-field"><label for="email">Email address</label><input type="email" name="emailDetails" id="email" autocomplete="email" maxlength="254" placeholder="you@example.com" required></div>
+                        </div>
+                        <div class="contact-field">
+                            <label for="keyup">Your message</label>
+                            <textarea name="message" id="keyup" rows="7" maxlength="2000" placeholder="What happened? What did you expect? Include the page or item involved and any error message." aria-describedby="messageHint messageCount" required></textarea>
+                            <div class="message-meta"><span id="messageHint">A little detail goes a long way.</span><span id="messageCount">0 / 2000</span></div>
+                        </div>
+                        <div class="contact-confirm"><input type="checkbox" id="agree"><label for="agree">I’ve checked my details and I’m ready to send this message.</label></div>
+                        <button class="contact-submit" type="submit" id="submitBtn" disabled>Send message &rarr;</button>
+                    </form>
+                </section>
+            </div>
         </main>
 
 
