@@ -182,7 +182,7 @@ async function main() {
 
             // Attach a handler for WHEN it finishes
             promise.then(result => {
-                console.log("STREAM:", result);
+                if (result !== undefined) console.log("STREAM:", result);
             });
 
             await sleep(900);

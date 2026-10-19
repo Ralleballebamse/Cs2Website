@@ -19,6 +19,7 @@ export async function loadMoreItems(invData, containerPerSteamAccount, deps) {
 		errorMessage.includes("unavailable");
 
 	if (isPrivateInventory) {
+		console.log(`${containerPerSteamAccount.dataset.playerName || steamid} private inventory`);
 		showInventoryMessage("This player's CS2 inventory is private.");
 		mainContainer.append(containerPerSteamAccount);
 		return;

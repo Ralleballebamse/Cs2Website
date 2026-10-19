@@ -59,8 +59,9 @@ router.get("/steam", async (req, res) => {
     let text = await r.text();
     let contentType = r.headers.get("content-type") || "application/json";
 
-    if ((r.status === 401 || r.status === 403) && !contentType.includes("application/json")) {
-      text = JSON.stringify({ error: "This inventory is private or unavailable" });
+    const privateInventory = r.status === 401 || r.status === 403;
+    if (privateInventory) {
+      text = JSON.stringify({ privateInventory: true, status: r.status });
       contentType = "application/json";
     }
 
@@ -70,7 +71,7 @@ router.get("/steam", async (req, res) => {
     }
 
     const result = {
-      status: r.status,
+      status: privateInventory ? 200 : r.status,
       text,
       contentType,
       createdAt: Date.now()
