@@ -1,4 +1,5 @@
 import { requestMarketPrices } from "./marketPrices.js";
+import { isDefaultWeapon } from "./inventoryFilter.js";
 export async function loadMoreItems(invData, containerPerSteamAccount, deps) {
 	const { arrayAssets, normalPostContainer, mainContainer, steamid } = deps;
 
@@ -51,6 +52,7 @@ export async function loadMoreItems(invData, containerPerSteamAccount, deps) {
 
 		const desc = descByClass.get(classid);
 		if (!desc) continue;
+		if (isDefaultWeapon(desc)) continue;
 
 		const exclude = desc.tags?.some(
 			(tag) =>
@@ -101,7 +103,10 @@ export async function loadMoreItems(invData, containerPerSteamAccount, deps) {
 		const itemFloat = document.createElement("h5");
 		const props = propsByAssetId.get(asset.assetid);
 		const floatValue = props?.find((p) => p.name === "Wear Rating")?.float_value;
-		itemFloat.textContent = Number(floatValue).toFixed(7);
+		if (floatValue != null && Number.isFinite(Number(floatValue))) {
+			post.dataset.float = String(floatValue);
+			itemFloat.textContent = Number(floatValue).toFixed(7);
+		} else itemFloat.textContent = "Float unavailable";
 
 		// --- image ---
 		const itemImage = document.createElement("img");

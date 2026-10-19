@@ -22,6 +22,11 @@ export function resetForNewMatch(deps) {
     state.showSpecifiedPlayerInv = false;
     state.indexPlayerInv = 0;
     state.followPriceRange = false;
+    state.followFloatRange = false;
+    state.highestFloat = "";
+    state.lowestFloat = "";
+    state.sortMetric = "price";
+    document.getElementById("FloatToFloat")?.reset();
     state.highToLow = false;
     state.lowToHigh = false;
     state.heighestPrice = 0;

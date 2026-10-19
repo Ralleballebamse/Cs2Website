@@ -48,6 +48,10 @@ async function main() {
         heighestPrice: 0,
         minimunPrice: 0,
         followPriceRange: false,
+        highestFloat: "",
+        lowestFloat: "",
+        followFloatRange: false,
+        sortMetric: "price",
         lowToHigh: false,
         highToLow: false,
         showSpecifiedPlayerInv: false,
@@ -72,6 +76,9 @@ async function main() {
     //ElementbyIds
     const sortItemsByHighPriceToLow = document.getElementById("sortItemsByHighPriceToLowBtn");
     const sortItemsByLowPriceToHigh = document.getElementById("sortItemsByLowPriceToHighBtn");
+    const sortItemsByHighFloatToLow = document.getElementById("sortItemsByHighFloatToLowBtn");
+    const sortItemsByLowFloatToHigh = document.getElementById("sortItemsByLowFloatToHighBtn");
+    const floatRangeForm = document.getElementById("FloatToFloat");
     const switchToMain = document.getElementById("switchToMain");
     const priceHighTextArea = document.getElementById("PriceToPrice");
     const searchForSkins = document.getElementById("SearchForSkinsTextArea");
@@ -101,6 +108,9 @@ async function main() {
         steamProfileButtonAll,
         sortItemsByHighPriceToLow,
         sortItemsByLowPriceToHigh,
+        sortItemsByHighFloatToLow,
+        sortItemsByLowFloatToHigh,
+        floatRangeForm,
         searchForSkins,
         switchToMain,
         priceHighTextArea,

@@ -3,6 +3,9 @@ export function initHtmlButtons(deps) {
         steamProfileButtonAll,
         sortItemsByHighPriceToLow,
         sortItemsByLowPriceToHigh,
+        sortItemsByHighFloatToLow,
+        sortItemsByLowFloatToHigh,
+        floatRangeForm,
         searchForSkins,
         switchToMain,
         priceHighTextArea,
@@ -27,14 +30,42 @@ export function initHtmlButtons(deps) {
     });
 
     sortItemsByHighPriceToLow.addEventListener("click", () => {
+        state.sortMetric = "price";
         state.highToLow = true;
         state.lowToHigh = false;
         checkActiveFunctions();
     });
 
     sortItemsByLowPriceToHigh.addEventListener("click", () => {
+        state.sortMetric = "price";
         state.lowToHigh = true;
         state.highToLow = false;
+        checkActiveFunctions();
+    });
+
+    sortItemsByHighFloatToLow.addEventListener("click", () => {
+        state.sortMetric = "float";
+        state.highToLow = true;
+        state.lowToHigh = false;
+        checkActiveFunctions();
+    });
+
+    sortItemsByLowFloatToHigh.addEventListener("click", () => {
+        state.sortMetric = "float";
+        state.lowToHigh = true;
+        state.highToLow = false;
+        checkActiveFunctions();
+    });
+
+    floatRangeForm.addEventListener("keydown", (e) => {
+        if (e.ctrlKey || e.metaKey || e.key.length > 1) return;
+        if (!/^[0-9.,]$/.test(e.key)) e.preventDefault();
+    });
+    floatRangeForm.addEventListener("submit", e => e.preventDefault());
+    floatRangeForm.addEventListener("input", () => {
+        state.highestFloat = document.getElementById("FloatHigh").value.trim();
+        state.lowestFloat = document.getElementById("FloatLow").value.trim();
+        state.followFloatRange = state.highestFloat !== "" || state.lowestFloat !== "";
         checkActiveFunctions();
     });
 
@@ -91,7 +122,7 @@ export function initHtmlButtons(deps) {
         // 2) Apply price filter
         let activeContainer = baseContainer;
 
-        if (state.followPriceRange) {
+        if (state.followPriceRange || state.followFloatRange) {
             sortOutLowAndHighPrices(state.heighestPrice, state.minimunPrice, baseContainer);
             activeContainer = itemUserDecidePriceContainer;
         }

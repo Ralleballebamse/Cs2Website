@@ -32,7 +32,7 @@
             <aside class="sidebar" id="sidebar">
                 <form id="SearchForSkins" novalidate>
                     <div class="field">
-                        <label for="SearchForSkinsLabel">SearchForSkins</label>
+                        <label for="SearchForSkinsTextArea">Search</label>
                         <textarea name="SearchForSkins" id="SearchForSkinsTextArea" rows="1" maxlength="20"></textarea>
                     </div>
                 </form>
@@ -44,6 +44,16 @@
                     <div class="field">
                         <label for="PriceLow">Low</label>
                         <textarea name="PriceLow" id="PriceLow" rows="1" maxlength="5"></textarea>
+                    </div>
+                </form>
+                <form id="FloatToFloat" novalidate>
+                    <div class="field">
+                        <label for="FloatHigh">High Float</label>
+                        <textarea name="FloatHigh" id="FloatHigh" rows="1" maxlength="10" inputmode="decimal"></textarea>
+                    </div>
+                    <div class="field">
+                        <label for="FloatLow">Low Float</label>
+                        <textarea name="FloatLow" id="FloatLow" rows="1" maxlength="10" inputmode="decimal"></textarea>
                     </div>
                 </form>
                 <div class="multipleProfileButtons" id="multipleProfileButtons">
@@ -61,6 +71,8 @@
                     <div class="dropdown-content">
                         <button id="sortItemsByHighPriceToLowBtn">Highest Price</button>
                         <button id="sortItemsByLowPriceToHighBtn">Lowest Price</button>
+                        <button id="sortItemsByHighFloatToLowBtn">Highest Float</button>
+                        <button id="sortItemsByLowFloatToHighBtn">Lowest Float</button>
                         <button id="switchToMain">Main Menu</button>
                     </div>
                 </div>

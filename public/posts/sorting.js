@@ -1,3 +1,14 @@
+export function readFloat(post) {
+    return post.dataset.float === undefined ? NaN : Number(post.dataset.float);
+}
+
+export function matchesFloatRange(value, low, high) {
+    const minimum = low === "" ? 0 : Number(low.replace(",", "."));
+    const maximum = high === "" ? 1 : Number(high.replace(",", "."));
+    return Number.isFinite(value) && minimum >= 0 && maximum <= 1 &&
+        value >= minimum && value <= maximum;
+}
+
 export function initSorting(deps) {
     const {
         state,
@@ -7,7 +18,7 @@ export function initSorting(deps) {
     } = deps;
 
     function sortOutLowAndHighPrices(highValue, lowValue, container) {
-        if (highValue === "") highValue = 10000;
+        if (highValue === "") highValue = Infinity;
         if (lowValue === "") lowValue = 0;
 
         const posts = Array.from(container.querySelectorAll(".post"));
@@ -17,8 +28,9 @@ export function initSorting(deps) {
             const priceA = parseFloat(
                 post.querySelector("h6").textContent.replace("+", "").replace(",", ".").replace(/[^0-9.]/g, "")
             );
-            console.log(priceA);
-            if (priceA >= lowValue && priceA <= highValue) {
+            const matchesPrice = !state.followPriceRange || (priceA >= lowValue && priceA <= highValue);
+            const matchesFloat = !state.followFloatRange || matchesFloatRange(readFloat(post), state.lowestFloat, state.highestFloat);
+            if (matchesPrice && matchesFloat) {
                 itemUserDecidePriceContainer.appendChild(post.cloneNode(true));
             }
         });
@@ -29,27 +41,23 @@ export function initSorting(deps) {
             sortItemsByHighPriceToLowFunction("lowToHigh", itemUserDecidePriceContainer);
         }
 
-        state.followPriceRange = !(highValue === 10000 && lowValue === 0);
-
         displayVisibleOrHidden(itemUserDecidePriceContainer);
     }
 
     function sortItemsByHighPriceToLowFunction(sort, container) {
-        if ((container.querySelectorAll("div").length) === 0) {
-            container = normalPostContainer;
-        }
-
         displayVisibleOrHidden(container);
 
         const posts = Array.from(container.querySelectorAll(".post"));
         posts.sort((a, b) => {
-            const priceA = parseFloat(
+            const priceA = state.sortMetric === "float" ? readFloat(a) : parseFloat(
                 a.querySelector("h6").textContent.replace("+", "").replace(",", ".").replace(/[^0-9.]/g, "")
             );
-            const priceB = parseFloat(
+            const priceB = state.sortMetric === "float" ? readFloat(b) : parseFloat(
                 b.querySelector("h6").textContent.replace("+", "").replace(",", ".").replace(/[^0-9.]/g, "")
             );
 
+            if (!Number.isFinite(priceA)) return Number.isFinite(priceB) ? 1 : 0;
+            if (!Number.isFinite(priceB)) return -1;
             if (sort === "highToLow") {
                 state.highToLow = true;
                 state.lowToHigh = false;
